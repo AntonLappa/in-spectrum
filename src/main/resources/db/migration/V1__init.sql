@@ -25,6 +25,7 @@ END $$;
 
 CREATE TABLE IF NOT EXISTS users (
                                      id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                     name          TEXT NOT NULL,  
                                      email         TEXT NOT NULL UNIQUE,
                                      password_hash TEXT NOT NULL,
                                      user_type     user_type NOT NULL,
@@ -99,8 +100,7 @@ CREATE TABLE IF NOT EXISTS progress_entries (
                                                 plan_item_id UUID NOT NULL REFERENCES plan_items(id) ON DELETE CASCADE,
                                                 entry_date   DATE NOT NULL DEFAULT CURRENT_DATE,
                                                 note         TEXT,
-                                                created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
-                                                UNIQUE (plan_item_id, entry_date)
+                                                created_at   TIMESTAMPTZ NOT NULL DEFAULT now()                                       
 );
 
 CREATE INDEX IF NOT EXISTS idx_progress_plan_item ON progress_entries(plan_item_id);
