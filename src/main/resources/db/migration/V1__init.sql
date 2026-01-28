@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
   name          TEXT NOT NULL,
   email         TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
+  phone_number  TEXT NOT NULL UNIQUE,
   user_type     TEXT NOT NULL CHECK (user_type IN ('PARENT', 'EDUCATOR')),
   role          TEXT NOT NULL DEFAULT 'USER' CHECK (role IN ('USER', 'ADMIN')),
   is_active     BOOLEAN NOT NULL DEFAULT TRUE,
