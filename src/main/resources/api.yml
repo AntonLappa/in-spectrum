@@ -1,0 +1,918 @@
+openapi: 3.1.1
+
+info:
+  title: InSpectrum API
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8080
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: Auth endpoints.
+  - name: Users
+    description: User profile and account management.
+  - name: Assessments
+    description: Form and assessment flows.
+  - name: Plans
+    description: Personalized learning plans.
+  - name: Resources
+    description: Content library with educational materials used in personalized plans.
+  - name: Progress
+    description: Progress tracking for plan items.
+
+
+paths:
+  # Auth
+  /auth/login:
+    post:
+      security: []
+
+      summary: User login endpoint.
+
+      operationId: login
+
+      tags:
+        - Auth
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  # Sign-up
+  /auth/sign-up:
+    post:
+      security: []
+
+      operationId: signUp
+
+      summary: User sign-up endpoint
+
+      tags:
+        - Auth
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  # User
+  /users/me:
+    get:
+      summary: Get User
+
+      tags:
+        - Users
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update users profile
+
+      tags:
+        - Users
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  #  Assessments
+  /assessments:
+    post:
+      summary: Submit an assessment questionnaire
+
+      operationId: createAssessment
+
+      tags:
+        - Assessments
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssessmentCreateRequest'
+
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  #Plans
+  /plans/current:
+    get:
+      operationId: getCurrentPlan
+
+      summary: Read current plan for user
+
+      tags:
+        - Plans
+
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /plans/generate:
+    post:
+      operationId: generatePlan
+
+      summary: Generate plan after completing the form
+
+      tags:
+        - Plans
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanGenerateRequest'
+
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  #Resources
+  /resources:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/ResourceTypeParam'
+        - $ref: '#/components/parameters/AudienceParam'
+        - $ref: '#/components/parameters/SkillCodeParam'
+        - $ref: '#/components/parameters/IsPublishedParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OffsetParam'
+
+      summary: list of resources
+
+      operationId: listResources
+
+      tags:
+        - Resources
+
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceListResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /resources/{resourceId}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/ResourceIdParam'
+
+      summary: Get resource details by id
+
+      operationId: getResourceById
+
+      tags:
+        - Resources
+
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  #Progress
+  /plan-items/{planItemId}/progress:
+    post:
+      summary: Create a progress record for a date
+
+      operationId: createProgressEntry
+
+      tags:
+        - Progress
+
+      parameters:
+        - $ref: '#/components/parameters/PlanItemIdParam'
+
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgressCreateRequest'
+
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressEntryResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      summary: Show history of progress for a plan item
+
+      operationId: listProgressEntries
+
+      tags:
+        - Progress
+
+      parameters:
+        - $ref: '#/components/parameters/PlanItemIdParam'
+
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProgressEntryResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+#==========
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Max number of items to return
+    OffsetParam:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Number of items to skip
+    ResourceTypeParam:
+      name: type
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ VIDEO, TEXT, IMAGE ]
+      description: Filter resource by type
+    AudienceParam:
+      name: audience
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ HOME, CLASS, BOTH ]
+      description: Filter resources by audience
+    SkillCodeParam:
+      name: skillCode
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Filter resources by skill code
+    IsPublishedParam:
+      name: isPublished
+      in: query
+      required: false
+      schema:
+        type: boolean
+      description: Filter resources by publication status
+    ResourceIdParam:
+      name: resourceId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Resource id
+    PlanItemIdParam:
+      name: planItemId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Plan item id
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: user@example.com
+        password:
+          type: string
+          example: qwerty123
+    # ========
+    SignUpRequest:
+      type: object
+      required:
+        - name
+        - phoneNumber
+        - email
+        - password
+        - userType
+      properties:
+        name:
+          type: string
+          example: Unknown User
+        phoneNumber:
+          type: string
+          example: +123456789101
+        email:
+          type: string
+          format: email
+          example: user@mail.com
+        password:
+          type: string
+          format: password
+          example: qwerty123
+        userType:
+          type: string
+          enum: [PARENT, EDUCATOR]
+          example: PARENT
+    # ========
+    TokenResponse:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWT token.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30
+    # ========
+    UserResponse:
+      type: object
+      required:
+        - id
+        - name
+        - phoneNumber
+        - email
+        - userType
+        - role
+        - isActive
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
+          readOnly: true
+        name:
+          type: string
+          example: Name Surname
+        phoneNumber:
+          type: string
+          example: +123456789101
+        email:
+          type: string
+          format: email
+          example: user@mail.com
+        userType:
+          type: string
+          enum: [ PARENT, EDUCATOR ]
+          example: PARENT
+        role:
+          type: string
+          enum: [ USER, ADMIN ]
+          example: USER
+        isActive:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: 2021-09-20T12:00:00Z
+          readOnly: true
+    # ========
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Name Surname
+        phoneNumber:
+          type: string
+          example: +123456789101
+    # ========
+    AssessmentCreateRequest:
+      type: object
+      required:
+        - answers
+      properties:
+        answers:
+          type: object
+          additionalProperties: true
+          description: Key-value answers
+          example:
+            sensory_noise: high
+            communication_request: medium
+            routine_changes: low
+    # ========
+    AssessmentResponse:
+      type: object
+      required:
+        - id
+        - submittedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        submittedAt:
+          type: string
+          format: date-time
+          example: 2026-01-24T20:00:00Z
+        result:
+          type: object
+          additionalProperties: true
+          description: Calculated assessment result
+          example:
+            topSkills:
+              - COMMUNICATION
+              - SENSORY
+    # ========
+    PlanResponse:
+      type: object
+      required:
+        - id
+        - title
+        - createdAt
+        - items
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
+          readOnly: true
+        title:
+          type: string
+          example: your plan
+        createdAt:
+          type: string
+          format: date-time
+          example: 2021-09-20T12:00:00Z
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanItemResponse'
+    # ========
+    PlanItemResponse:
+      type: object
+      required:
+        - id
+        - status
+        - sortOrder
+        - resource
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
+          readOnly: true
+        status:
+          type: string
+          enum: [TODO, DONE, SKIPPED]
+          example: DONE
+        sortOrder:
+          type: integer
+          example: 1
+        resource:
+          $ref: '#/components/schemas/ResourceShort'
+    # ========
+    ResourceShort:
+      type: object
+      required:
+        - id
+        - title
+        - type
+        - audience
+        - url
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
+          readOnly: true
+        title:
+          type: string
+          example: your resource
+        type:
+          type: string
+          enum: [VIDEO, TEXT, IMAGE]
+          example: TEXT
+        audience:
+          type: string
+          enum: [HOME, CLASS, BOTH]
+          example: HOME
+        url:
+          type: string
+          example: https://example.com/resource/123
+    # =======
+    PlanGenerateRequest:
+      type: object
+      properties:
+        assessmentId:
+          type: string
+          format: uuid
+          description: Assessment ID used to generate the plan. User can get other plan after some time.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+    # ========
+    ResourceResponse:
+      type: object
+      required:
+        - id
+        - skillCode
+        - title
+        - description
+        - type
+        - audience
+        - url
+        - isPublished
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
+          readOnly: true
+        skillCode:
+          type: string
+          example: COMMUNICATION
+        title:
+          type: string
+          example: Name of resource
+        description:
+          type: string
+          example: Text to help children develop communication skills
+        type:
+          type: string
+          enum: [ VIDEO, TEXT, IMAGE ]
+          example: VIDEO
+        audience:
+          type: string
+          enum: [ HOME, CLASS, BOTH ]
+          example: HOME
+        url:
+          type: string
+          example: https://example.com/resource/123
+        isPublished:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: 2021-09-20T12:00:00Z
+          readOnly: true
+    # ========
+    ResourceListResponse:
+      type: object
+      required:
+        - total
+        - limit
+        - offset
+        - items
+      properties:
+        total:
+          type: integer
+          example: 154
+          description: Total number of resources matching the filter.
+        limit:
+          type: integer
+          example: 20
+        offset:
+          type: integer
+          example: 0
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceResponse'
+    # ========
+    ProgressCreateRequest:
+      type: object
+      required:
+        - entryDate
+      properties:
+        entryDate:
+          type: string
+          format: date
+          example: 2026-01-26
+          description: Date of progress entry.
+        note:
+          type: string
+          nullable: true
+          example: Child completed exercise.
+    # ========
+    ProgressEntryResponse:
+      type: object
+      required:
+        - id
+        - planItemId
+        - entryDate
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
+          readOnly: true
+        planItemId:
+          type: string
+          format: uuid
+          example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
+          readOnly: true
+        entryDate:
+          type: string
+          format: date
+          example: 2026-01-26
+        note:
+          type: string
+          nullable: true
+          example: Child completed exercise.
+        createdAt:
+          type: string
+          format: date-time
+          example: 2021-09-20T12:00:00Z
+          readOnly: true
+    # ========
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          example: Error message.
