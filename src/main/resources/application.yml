@@ -1,3 +1,9 @@
 spring:
   application:
     name: InSpectrum
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/neuro_app
+    username: neuro
+    password: neuro_password
+
