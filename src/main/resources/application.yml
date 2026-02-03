@@ -7,3 +7,8 @@ spring:
     username: neuro
     password: neuro_password
 
+#  jackson:
+#    property-naming-strategy: SNAKE_CASE
+
+
+
