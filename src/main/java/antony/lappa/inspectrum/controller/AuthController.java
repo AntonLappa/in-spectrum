@@ -48,7 +48,5 @@ public class AuthController {
 
         return ResponseEntity.ok(new TokenResponseDto(fakeToken));
         }
-    }
-
 
 }
