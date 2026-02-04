@@ -1,7 +1,5 @@
-package antony.lappa.inspectrum.controller.dto;
+package antony.lappa.inspectrum.service.model;
 
-import antony.lappa.inspectrum.service.model.Role;
-import antony.lappa.inspectrum.service.model.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,8 +9,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class UserResponseDto {
-
+public class User {
 
     private UUID id;
     private String name;
@@ -22,5 +19,4 @@ public class UserResponseDto {
     private Role role;
     private boolean active;
     private Instant createdAt;
-
 }
