@@ -1,4 +1,4 @@
-package antony.lappa.inspectrum.controller.ExceptionHandler;
+package antony.lappa.inspectrum.controller.exceptionhandler;
 
 
 import antony.lappa.inspectrum.controller.dto.ErrorDto;
