@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id            UUID PRIMARY KEY,
   name          TEXT NOT NULL,
   email         TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS assessments (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id            UUID PRIMARY KEY,
   user_id       UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   submitted_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
   answers_json  JSONB NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS assessments (
 );
 
 CREATE TABLE IF NOT EXISTS skills (
-  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id          UUID PRIMARY KEY,
   code        TEXT NOT NULL UNIQUE,
   name        TEXT NOT NULL,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS skills (
 );
 
 CREATE TABLE IF NOT EXISTS resources (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id            UUID PRIMARY KEY,
   skill_id      UUID NOT NULL REFERENCES skills(id),
   title         TEXT NOT NULL,
   description   TEXT,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS resources (
 );
 
 CREATE TABLE IF NOT EXISTS plans (
-  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id             UUID PRIMARY KEY,
   user_id        UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   assessment_id  UUID REFERENCES assessments(id) ON DELETE SET NULL,
   title          TEXT NOT NULL DEFAULT 'Персональний план',
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS plans (
 );
 
 CREATE TABLE IF NOT EXISTS plan_items (
-  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id          UUID PRIMARY KEY,
   plan_id     UUID NOT NULL REFERENCES plans(id) ON DELETE CASCADE,
   resource_id UUID NOT NULL REFERENCES resources(id),
   status      TEXT NOT NULL DEFAULT 'TODO' CHECK (status IN ('TODO', 'DONE', 'SKIPPED')),
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS plan_items (
 );
 
 CREATE TABLE IF NOT EXISTS progress_entries (
-  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id           UUID PRIMARY KEY,
   plan_item_id UUID NOT NULL REFERENCES plan_items(id) ON DELETE CASCADE,
   entry_date   DATE NOT NULL DEFAULT CURRENT_DATE,
   note         TEXT,
