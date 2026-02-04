@@ -5,6 +5,7 @@ import antony.lappa.inspectrum.mapper.UserMapper;
 import antony.lappa.inspectrum.service.model.AuthService;
 import antony.lappa.inspectrum.service.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +39,7 @@ public class AuthController {
         );
 
         UserResponseDto responseDto = userMapper.toDto(user);
-        return ResponseEntity.status(201).body(responseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @PostMapping("/auth/login")
