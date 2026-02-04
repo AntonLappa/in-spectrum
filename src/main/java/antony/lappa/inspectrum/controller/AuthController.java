@@ -1,48 +1,50 @@
 package antony.lappa.inspectrum.controller;
 
 import antony.lappa.inspectrum.controller.dto.*;
-import org.springframework.web.bind.annotation.GetMapping;
+import antony.lappa.inspectrum.mapper.UserMapper;
+import antony.lappa.inspectrum.service.model.AuthService;
+import antony.lappa.inspectrum.service.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
-import java.util.HashMap;
 import java.util.UUID;
 import java.time.Instant;
 
 @RestController
 public class AuthController {
 
-    private HashMap<UUID, UserResponseDto> users = new HashMap<>();
+    private final AuthService authService;
+    private final UserMapper userMapper;
+
+    @Autowired
+    public AuthController(AuthService authService, UserMapper userMapper) {
+        this.authService = authService;
+        this.userMapper = userMapper;
+    }
+
 
     @PostMapping("/auth/sign-up")
     public ResponseEntity<UserResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
 
 
-        UserResponseDto response = new UserResponseDto();
-        response.setName(signUpRequestDto.getName());
-        response.setPhoneNumber(signUpRequestDto.getPhoneNumber());
-        response.setEmail(signUpRequestDto.getEmail());
-        response.setUserType(signUpRequestDto.getUserType());
-        response.setId(UUID.randomUUID());
-        response.setRole(Role.USER);
-        response.setActive(true);
-        response.setCreatedAt(Instant.now());
+        User user = authService.signUp(
+                signUpRequestDto.getName(),
+                signUpRequestDto.getPhoneNumber(),
+                signUpRequestDto.getEmail(),
+                signUpRequestDto.getPassword(),
+                signUpRequestDto.getUserType()
+        );
 
-        users.put(response.getId(), response);
-
-        return ResponseEntity.status(201).body(response);
-
+        UserResponseDto responseDto = userMapper.toDto(user);
+        return ResponseEntity.status(201).body(responseDto);
     }
 
     @PostMapping("/auth/login")
     public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
 
-        UserResponseDto user = users.values()
-                .stream()
-                .filter(u ->  u.getEmail().equals(loginRequestDto.getEmail()))
-                .findFirst()
-                .orElse(null);
+        User user = authService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 
         String fakeToken = "just-fake-jwt-for-check";
 
@@ -50,3 +52,5 @@ public class AuthController {
         }
 
 }
+
+
