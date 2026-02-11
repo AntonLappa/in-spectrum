@@ -11,7 +11,7 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
-    clear-checksums: true
+
 
 #  jackson:
 #    property-naming-strategy: SNAKE_CASE
