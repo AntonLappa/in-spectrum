@@ -1,6 +1,7 @@
 package antony.lappa.inspectrum.controller.dto;
 
 import antony.lappa.inspectrum.service.model.UserType;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

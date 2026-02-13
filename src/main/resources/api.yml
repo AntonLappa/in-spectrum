@@ -533,21 +533,21 @@ components:
         enum: [ HOME, CLASS, BOTH ]
       description: Filter resources by audience
     SkillCodeParam:
-      name: skillCode
+      name: skill_code
       in: query
       required: false
       schema:
         type: string
       description: Filter resources by skill code
     IsPublishedParam:
-      name: isPublished
+      name: is_published
       in: query
       required: false
       schema:
         type: boolean
       description: Filter resources by publication status
     ResourceIdParam:
-      name: resourceId
+      name: resource_id
       in: path
       required: true
       schema:
@@ -555,7 +555,7 @@ components:
         format: uuid
       description: Resource id
     PlanItemIdParam:
-      name: planItemId
+      name: plan_item_id
       in: path
       required: true
       schema:
@@ -580,15 +580,15 @@ components:
       type: object
       required:
         - name
-        - phoneNumber
+        - phone_number
         - email
         - password
-        - userType
+        - user_type
       properties:
         name:
           type: string
           example: Unknown User
-        phoneNumber:
+        phone_number:
           type: string
           example: +123456789101
         email:
@@ -599,7 +599,7 @@ components:
           type: string
           format: password
           example: qwerty123
-        userType:
+        user_type:
           type: string
           enum: [PARENT, EDUCATOR]
           example: PARENT
@@ -619,12 +619,12 @@ components:
       required:
         - id
         - name
-        - phoneNumber
+        - phone_number
         - email
-        - userType
+        - user_type
         - role
-        - isActive
-        - createdAt
+        - is_active
+        - created_at
       properties:
         id:
           type: string
@@ -634,14 +634,14 @@ components:
         name:
           type: string
           example: Name Surname
-        phoneNumber:
+        phone_number:
           type: string
           example: +123456789101
         email:
           type: string
           format: email
           example: user@mail.com
-        userType:
+        user_type:
           type: string
           enum: [ PARENT, EDUCATOR ]
           example: PARENT
@@ -649,10 +649,10 @@ components:
           type: string
           enum: [ USER, ADMIN ]
           example: USER
-        isActive:
+        is_active:
           type: boolean
           example: true
-        createdAt:
+        created_at:
           type: string
           format: date-time
           example: 2021-09-20T12:00:00Z
@@ -664,7 +664,7 @@ components:
         name:
           type: string
           example: Name Surname
-        phoneNumber:
+        phone_number:
           type: string
           example: +123456789101
     # ========
@@ -686,13 +686,13 @@ components:
       type: object
       required:
         - id
-        - submittedAt
+        - submitted_at
       properties:
         id:
           type: string
           format: uuid
           example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        submittedAt:
+        submitted_at:
           type: string
           format: date-time
           example: 2026-01-24T20:00:00Z
@@ -701,7 +701,7 @@ components:
           additionalProperties: true
           description: Calculated assessment result
           example:
-            topSkills:
+            top_skills:
               - COMMUNICATION
               - SENSORY
     # ========
@@ -710,7 +710,7 @@ components:
       required:
         - id
         - title
-        - createdAt
+        - created_at
         - items
       properties:
         id:
@@ -721,7 +721,7 @@ components:
         title:
           type: string
           example: your plan
-        createdAt:
+        created_at:
           type: string
           format: date-time
           example: 2021-09-20T12:00:00Z
@@ -736,7 +736,7 @@ components:
       required:
         - id
         - status
-        - sortOrder
+        - sort_order
         - resource
       properties:
         id:
@@ -748,7 +748,7 @@ components:
           type: string
           enum: [TODO, DONE, SKIPPED]
           example: DONE
-        sortOrder:
+        sort_order:
           type: integer
           example: 1
         resource:
@@ -786,7 +786,7 @@ components:
     PlanGenerateRequest:
       type: object
       properties:
-        assessmentId:
+        assessment_id:
           type: string
           format: uuid
           description: Assessment ID used to generate the plan. User can get other plan after some time.
@@ -796,21 +796,21 @@ components:
       type: object
       required:
         - id
-        - skillCode
+        - skill_code
         - title
         - description
         - type
         - audience
         - url
-        - isPublished
-        - createdAt
+        - is_published
+        - created_at
       properties:
         id:
           type: string
           format: uuid
           example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
           readOnly: true
-        skillCode:
+        skill_code:
           type: string
           example: COMMUNICATION
         title:
@@ -830,10 +830,10 @@ components:
         url:
           type: string
           example: https://example.com/resource/123
-        isPublished:
+        is_published:
           type: boolean
           example: true
-        createdAt:
+        created_at:
           type: string
           format: date-time
           example: 2021-09-20T12:00:00Z
@@ -865,9 +865,9 @@ components:
     ProgressCreateRequest:
       type: object
       required:
-        - entryDate
+        - entry_date
       properties:
-        entryDate:
+        entry_date:
           type: string
           format: date
           example: 2026-01-26
@@ -881,21 +881,21 @@ components:
       type: object
       required:
         - id
-        - planItemId
-        - entryDate
-        - createdAt
+        - plan_item_id
+        - entry_date
+        - created_at
       properties:
         id:
           type: string
           format: uuid
           example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
           readOnly: true
-        planItemId:
+        plan_item_id:
           type: string
           format: uuid
           example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
           readOnly: true
-        entryDate:
+        entry_date:
           type: string
           format: date
           example: 2026-01-26
@@ -903,7 +903,7 @@ components:
           type: string
           nullable: true
           example: Child completed exercise.
-        createdAt:
+        created_at:
           type: string
           format: date-time
           example: 2021-09-20T12:00:00Z
