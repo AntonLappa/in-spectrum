@@ -50,19 +50,34 @@ public class UserMapper {
         return user;
     }
 
-    // public UserEntity toEntity(User user) {
-    //
-    // UserEntity entity = new UserEntity();
-    // entity.setId(user.getId());
-    // entity.setName(user.getName());
-    // entity.setEmail(user.getEmail());
-    // entity.setPhoneNumber(user.getPhoneNumber());
-    // entity.setUserType(user.getUserType());
-    // entity.setRole(user.getRole());
-    // entity.setActive(user.isActive());
-    // entity.setCreatedAt(user.getCreatedAt());
-    //
-    // return entity;
-    // }
+    public UserEntity toEntity(User user) {
+        UserEntity entity = new UserEntity();
+        entity.setId(user.getId());
+        entity.setName(user.getName());
+        entity.setEmail(user.getEmail());
+        entity.setPasswordHash(null); // Should be handled by service
+        entity.setPhoneNumber(user.getPhoneNumber());
+        entity.setUserType(antony.lappa.inspectrum.repository.entity.UserType.valueOf(user.getUserType().name()));
+        entity.setRole(antony.lappa.inspectrum.repository.entity.Role.valueOf(user.getRole().name()));
+        entity.setActive(user.isActive());
+        entity.setCreatedAt(user.getCreatedAt());
+        return entity;
+    }
+
+    public void updateEntity(User source, UserEntity target) {
+        if (source.getName() != null)
+            target.setName(source.getName());
+        if (source.getEmail() != null)
+            target.setEmail(source.getEmail());
+        if (source.getPhoneNumber() != null)
+            target.setPhoneNumber(source.getPhoneNumber());
+        if (source.getUserType() != null) {
+            target.setUserType(antony.lappa.inspectrum.repository.entity.UserType.valueOf(source.getUserType().name()));
+        }
+        if (source.getRole() != null) {
+            target.setRole(antony.lappa.inspectrum.repository.entity.Role.valueOf(source.getRole().name()));
+        }
+        target.setActive(source.isActive());
+    }
 
 }
