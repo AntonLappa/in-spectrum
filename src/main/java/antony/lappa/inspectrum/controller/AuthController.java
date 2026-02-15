@@ -25,18 +25,15 @@ public class AuthController {
         this.userMapper = userMapper;
     }
 
-
     @PostMapping("/auth/sign-up")
     public ResponseEntity<UserResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
-
 
         User user = authService.signUp(
                 signUpRequestDto.getName(),
                 signUpRequestDto.getPhoneNumber(),
                 signUpRequestDto.getEmail(),
                 signUpRequestDto.getPassword(),
-                signUpRequestDto.getUserType()
-        );
+                signUpRequestDto.getUserType());
 
         UserResponseDto responseDto = userMapper.toDto(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
@@ -50,8 +47,6 @@ public class AuthController {
         String fakeToken = "just-fake-jwt-for-check";
 
         return ResponseEntity.ok(new TokenResponseDto(fakeToken));
-        }
+    }
 
 }
-
-

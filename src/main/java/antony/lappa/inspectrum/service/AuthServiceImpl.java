@@ -1,6 +1,5 @@
 package antony.lappa.inspectrum.service;
 
-
 import antony.lappa.inspectrum.exception.InvalidCredentialsException;
 import antony.lappa.inspectrum.exception.UserAlreadyExistException;
 import antony.lappa.inspectrum.exception.UserNotFoundException;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Optional;
 
-
 @Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -33,18 +31,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User signUp(String name, String phoneNumber, String email, String password, antony.lappa.inspectrum.service.model.UserType userType) {
+    public User signUp(String name, String phoneNumber, String email, String password,
+            antony.lappa.inspectrum.service.model.UserType userType) {
 
         log.info("Attempting to sign up user with email {}", email);
 
         Optional<UserEntity> userExists = userRepository.findByEmail(email);
 
-
         if (userExists.isPresent()) {
             log.error("User with {} email already exists", email);
             throw new UserAlreadyExistException(email);
         }
-
 
         UserEntity userEntity = new UserEntity();
         userEntity.setName(name);

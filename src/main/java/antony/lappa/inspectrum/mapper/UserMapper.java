@@ -8,11 +8,10 @@ import antony.lappa.inspectrum.service.model.User;
 import antony.lappa.inspectrum.service.model.UserType;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class UserMapper {
 
-    public User toDomain(SignUpRequestDto dto){
+    public User toDomain(SignUpRequestDto dto) {
 
         User user = new User();
         user.setName(dto.getName());
@@ -38,7 +37,7 @@ public class UserMapper {
         return dto;
     }
 
-    public User toDomain(UserEntity entity){
+    public User toDomain(UserEntity entity) {
         User user = new User();
         user.setId(entity.getId());
         user.setName(entity.getName());
@@ -51,19 +50,19 @@ public class UserMapper {
         return user;
     }
 
-//    public UserEntity toEntity(User user) {
-//
-//        UserEntity entity  = new UserEntity();
-//        entity.setId(user.getId());
-//        entity.setName(user.getName());
-//        entity.setEmail(user.getEmail());
-//        entity.setPhoneNumber(user.getPhoneNumber());
-//        entity.setUserType(user.getUserType());
-//        entity.setRole(user.getRole());
-//        entity.setActive(user.isActive());
-//        entity.setCreatedAt(user.getCreatedAt());
-//
-//        return entity;
-//    }
+    // public UserEntity toEntity(User user) {
+    //
+    // UserEntity entity = new UserEntity();
+    // entity.setId(user.getId());
+    // entity.setName(user.getName());
+    // entity.setEmail(user.getEmail());
+    // entity.setPhoneNumber(user.getPhoneNumber());
+    // entity.setUserType(user.getUserType());
+    // entity.setRole(user.getRole());
+    // entity.setActive(user.isActive());
+    // entity.setCreatedAt(user.getCreatedAt());
+    //
+    // return entity;
+    // }
 
 }

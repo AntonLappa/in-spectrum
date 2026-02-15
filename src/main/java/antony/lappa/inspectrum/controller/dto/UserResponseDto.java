@@ -13,7 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserResponseDto {
 
-
     private UUID id;
     private String name;
     private String phoneNumber;

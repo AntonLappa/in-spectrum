@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>antony.lappa</groupId>
-    <artifactId>InSpectrum</artifactId>
+    <artifactId>in-spectrum</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>InSpectrum</name>
+    <name>in-spectrum</name>
     <description>InSpectrum</description>
     <url/>
     <licenses>

@@ -1,6 +1,5 @@
 package antony.lappa.inspectrum.controller.exceptionhandler;
 
-
 import antony.lappa.inspectrum.controller.dto.ErrorDto;
 import antony.lappa.inspectrum.exception.InvalidCredentialsException;
 import antony.lappa.inspectrum.exception.UserAlreadyExistException;
