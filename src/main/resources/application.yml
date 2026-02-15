@@ -15,3 +15,7 @@ spring:
 
   jackson:
    property-naming-strategy: SNAKE_CASE
+
+jwt:
+  secret: ${JWT_SECRET:a-string-secret-at-least-256-bits-long}
+  ttl-millis: ${JWT_TTL:604800000} # 1 week in millisecond

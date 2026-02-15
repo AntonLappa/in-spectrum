@@ -2,31 +2,29 @@ package antony.lappa.inspectrum.controller;
 
 import antony.lappa.inspectrum.controller.dto.*;
 import antony.lappa.inspectrum.mapper.UserMapper;
+import antony.lappa.inspectrum.service.TokenService;
 import antony.lappa.inspectrum.service.model.AuthService;
 import antony.lappa.inspectrum.service.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
-import java.util.UUID;
-import java.time.Instant;
+
+
 
 @RestController
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
     private final UserMapper userMapper;
+    private final TokenService tokenService;
 
-    @Autowired
-    public AuthController(AuthService authService, UserMapper userMapper) {
-        this.authService = authService;
-        this.userMapper = userMapper;
-    }
 
     @PostMapping("/auth/sign-up")
-    public ResponseEntity<UserResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<TokenResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
 
         User user = authService.signUp(
                 signUpRequestDto.getName(),
@@ -35,8 +33,13 @@ public class AuthController {
                 signUpRequestDto.getPassword(),
                 signUpRequestDto.getUserType());
 
-        UserResponseDto responseDto = userMapper.toDto(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        String token = tokenService.createToken(
+                user.getId().toString(),
+                user.getRole()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new TokenResponseDto(token));
     }
 
     @PostMapping("/auth/login")
@@ -44,9 +47,9 @@ public class AuthController {
 
         User user = authService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 
-        String fakeToken = "just-fake-jwt-for-check";
+        String token = tokenService.createToken(user.getId().toString(), user.getRole());
 
-        return ResponseEntity.ok(new TokenResponseDto(fakeToken));
+        return ResponseEntity.ok(new TokenResponseDto(token));
     }
 
 }
