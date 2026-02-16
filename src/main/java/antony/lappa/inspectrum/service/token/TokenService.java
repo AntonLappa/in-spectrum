@@ -1,4 +1,4 @@
-package antony.lappa.inspectrum.service;
+package antony.lappa.inspectrum.service.token;
 
 import antony.lappa.inspectrum.service.model.Role;
 

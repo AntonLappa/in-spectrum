@@ -4,7 +4,7 @@ import antony.lappa.inspectrum.controller.dto.UserResponseDto;
 import antony.lappa.inspectrum.controller.dto.UserUpdateRequest;
 import antony.lappa.inspectrum.mapper.UserMapper;
 import antony.lappa.inspectrum.service.model.User;
-import antony.lappa.inspectrum.service.model.UserService;
+import antony.lappa.inspectrum.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

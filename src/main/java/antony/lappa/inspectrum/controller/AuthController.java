@@ -2,8 +2,8 @@ package antony.lappa.inspectrum.controller;
 
 import antony.lappa.inspectrum.controller.dto.*;
 import antony.lappa.inspectrum.mapper.UserMapper;
-import antony.lappa.inspectrum.service.TokenService;
-import antony.lappa.inspectrum.service.model.AuthService;
+import antony.lappa.inspectrum.service.token.TokenService;
+import antony.lappa.inspectrum.service.auth.AuthService;
 import antony.lappa.inspectrum.service.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

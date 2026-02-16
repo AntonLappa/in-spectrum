@@ -1,6 +1,6 @@
 package antony.lappa.inspectrum.config;
 
-import antony.lappa.inspectrum.service.TokenService;
+import antony.lappa.inspectrum.service.token.TokenService;
 import antony.lappa.inspectrum.service.model.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

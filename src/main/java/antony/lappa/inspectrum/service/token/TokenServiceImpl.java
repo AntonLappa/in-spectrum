@@ -1,7 +1,6 @@
-package antony.lappa.inspectrum.service;
+package antony.lappa.inspectrum.service.token;
 
 import antony.lappa.inspectrum.service.model.Role;
-import antony.lappa.inspectrum.service.model.UserType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

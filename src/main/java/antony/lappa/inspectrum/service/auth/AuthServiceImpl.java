@@ -1,4 +1,4 @@
-package antony.lappa.inspectrum.service;
+package antony.lappa.inspectrum.service.auth;
 
 import antony.lappa.inspectrum.exception.InvalidCredentialsException;
 import antony.lappa.inspectrum.exception.UserAlreadyExistException;
@@ -6,7 +6,6 @@ import antony.lappa.inspectrum.exception.UserNotFoundException;
 import antony.lappa.inspectrum.mapper.UserMapper;
 import antony.lappa.inspectrum.repository.entity.UserEntity;
 import antony.lappa.inspectrum.repository.UserRepository;
-import antony.lappa.inspectrum.service.model.AuthService;
 import antony.lappa.inspectrum.repository.entity.Role;
 import antony.lappa.inspectrum.service.model.User;
 import antony.lappa.inspectrum.repository.entity.UserType;
