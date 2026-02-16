@@ -571,7 +571,7 @@ components:
       properties:
         email:
           type: string
-          example: user@example.com
+          example: user@mail.com
         password:
           type: string
           example: qwerty123
