@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class UserUpdateRequest {
+public class UserUpdateRequestDto {
     private String name;
     private String phoneNumber;
 }

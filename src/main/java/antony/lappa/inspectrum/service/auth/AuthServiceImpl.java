@@ -11,6 +11,7 @@ import antony.lappa.inspectrum.service.model.User;
 import antony.lappa.inspectrum.repository.entity.UserType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -20,13 +21,16 @@ import java.util.Optional;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private UserRepository userRepository;
-    private UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public AuthServiceImpl(UserRepository userRepository, UserMapper userMapper,
+            BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
 
         UserEntity userEntity = new UserEntity();
         userEntity.setName(name);
-        userEntity.setPasswordHash(password);
+        userEntity.setPasswordHash(passwordEncoder.encode(password));
         userEntity.setPhoneNumber(phoneNumber);
         userEntity.setEmail(email);
         userEntity.setUserType(UserType.valueOf(userType.name()));
@@ -70,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
                     return new UserNotFoundException(email);
                 });
 
-        if (!userEntity.getPasswordHash().equals(password)) {
+        if (!passwordEncoder.matches(password, userEntity.getPasswordHash())) {
             log.error("Login failed: invalid password for email {}", email);
             throw new InvalidCredentialsException();
         }
