@@ -8,10 +8,6 @@ spring:
     password: ${DATABASE_PASSWORD:postgres_password}
     driver-class-name: org.postgresql.Driver
 
-server:
-  port: ${PORT:8080}
-
-
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
@@ -19,6 +15,9 @@ server:
 
   jackson:
    property-naming-strategy: SNAKE_CASE
+
+server:
+  port: ${PORT:8080}
 
 jwt:
   secret: ${JWT_SECRET:a-string-secret-at-least-256-bits-long}
