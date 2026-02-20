@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmail(String email) {
         log.info("Finding user by email: {}", email);
-        UserEntity userEntity = userRepository.findByEmail(email)
+        UserEntity userEntity = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new UserNotFoundException(email));
         return userMapper.toDomain(userEntity);
     }
