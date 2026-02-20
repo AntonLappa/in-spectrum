@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Attempting to sign up user with email {}", email);
 
-        Optional<UserEntity> userExists = userRepository.findByEmail(email);
+        Optional<UserEntity> userExists = userRepository.findByEmailIgnoreCase(email);
 
         if (userExists.isPresent()) {
             log.error("User with {} email already exists", email);
@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Attempting login for email {}", email);
 
-        UserEntity userEntity = userRepository.findByEmail(email)
+        UserEntity userEntity = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> {
                     log.error("Login failed: user with email {} not found", email);
                     return new UserNotFoundException(email);
