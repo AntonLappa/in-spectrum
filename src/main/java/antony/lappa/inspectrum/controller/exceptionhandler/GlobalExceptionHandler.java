@@ -1,6 +1,7 @@
 package antony.lappa.inspectrum.controller.exceptionhandler;
 
 import antony.lappa.inspectrum.controller.dto.ErrorDto;
+import antony.lappa.inspectrum.exception.AssessmentNotFoundException;
 import antony.lappa.inspectrum.exception.InvalidCredentialsException;
 import antony.lappa.inspectrum.exception.UserAlreadyExistException;
 import antony.lappa.inspectrum.exception.UserNotFoundException;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleUserNotFoundException(UserNotFoundException e) {
+    @ExceptionHandler({ UserNotFoundException.class, AssessmentNotFoundException.class })
+    public ResponseEntity<ErrorDto> handleNotFoundException(RuntimeException e) {
 
         ErrorDto errorDto = new ErrorDto(e.getMessage());
 
