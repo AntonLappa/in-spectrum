@@ -11,4 +11,6 @@ public interface AssessmentService {
 
     Assessment getById(UUID userId, UUID assessmentId);
 
+    Assessment getLatest(UUID userId);
+
 }
