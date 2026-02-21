@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://${DATABASE_HOST:127.0.0.1}:${DATABASE_PORT:5432}/${DATABASE_NAME:neuro_app}
-    username: ${DATABASE_USER:postgres}
-    password: ${DATABASE_PASSWORD:postgres_password}
+    username: ${DATABASE_USER:neuro}
+    password: ${DATABASE_PASSWORD:neuro_password}
     driver-class-name: org.postgresql.Driver
 
   liquibase:
