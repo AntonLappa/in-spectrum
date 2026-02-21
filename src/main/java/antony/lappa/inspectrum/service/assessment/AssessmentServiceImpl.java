@@ -37,7 +37,7 @@ public class AssessmentServiceImpl implements AssessmentService {
         assessment.setSubmittedAt(Instant.now());
         assessment.setAnswers(request.getAnswers());
 
-        // Placeholder for assessment result calculation logic
+
         Map<String, Object> result = new HashMap<>();
         result.put("status", "COMPLETED");
         assessment.setResult(result);
@@ -58,8 +58,18 @@ public class AssessmentServiceImpl implements AssessmentService {
 
         if (!entity.getUserId().equals(userId)) {
             log.error("Assessment {} does not belong to user {}", assessmentId, userId);
-            throw new AssessmentNotFoundException(assessmentId); // Or AccessDenied if specialized
+            throw new AssessmentNotFoundException(assessmentId);
         }
+
+        return assessmentMapper.toDomain(entity);
+    }
+
+    @Override
+    public Assessment getLatest(UUID userId) {
+        log.info("Getting latest assessment for user: {}", userId);
+
+        AssessmentEntity entity = assessmentRepository.findFirstByUserIdOrderBySubmittedAtDesc(userId)
+                .orElseThrow(() -> new AssessmentNotFoundException("No assessment found for user " + userId));
 
         return assessmentMapper.toDomain(entity);
     }
