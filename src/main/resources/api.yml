@@ -400,6 +400,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /assessments/latest:
+    get:
+      summary: Get latest assessment for current user
+      operationId: getLatestAssessment
+      tags:
+        - Assessments
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /assessments/{assessmentId}:
+    get:
+      summary: Get assessment by ID
+      operationId: getAssessmentById
+      tags:
+        - Assessments
+      parameters:
+        - $ref: '#/components/parameters/AssessmentIdParam'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   #Plans
   /plans/current:
     get:
@@ -664,6 +728,14 @@ components:
       scheme: bearer
       bearerFormat: JWT
   parameters:
+    AssessmentIdParam:
+      name: assessmentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Assessment ID
     LimitParam:
       name: limit
       in: query
