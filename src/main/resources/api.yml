@@ -545,6 +545,86 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /plans:
+    get:
+      operationId: getAllPlans
+
+      summary: Get all plans for the current user
+
+      tags:
+        - Plans
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlanResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /plans/items/{planItemId}/status:
+    patch:
+      operationId: updatePlanItemStatus
+
+      summary: Update the status of a plan item
+
+      tags:
+        - Plans
+
+      parameters:
+        - $ref: '#/components/parameters/PlanItemIdParam'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanItemStatusUpdateRequest'
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanItemResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   #Resources
   /resources:
     get:
@@ -1046,6 +1126,16 @@ components:
           format: uuid
           description: Assessment ID used to generate the plan. User can get other plan after some time.
           example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+    # ========
+    PlanItemStatusUpdateRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [TODO, DONE, SKIPPED]
+          example: DONE
     # ========
     ResourceResponse:
       type: object

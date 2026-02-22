@@ -1,6 +1,8 @@
 package antony.lappa.inspectrum.controller;
 
 import antony.lappa.inspectrum.controller.dto.*;
+import antony.lappa.inspectrum.controller.dto.auth.LoginRequestDto;
+import antony.lappa.inspectrum.controller.dto.auth.SignUpRequestDto;
 import antony.lappa.inspectrum.mapper.UserMapper;
 import antony.lappa.inspectrum.service.token.TokenService;
 import antony.lappa.inspectrum.service.auth.AuthService;

@@ -1,6 +1,6 @@
 package antony.lappa.inspectrum.mapper;
 
-import antony.lappa.inspectrum.controller.dto.AssessmentResponseDto;
+import antony.lappa.inspectrum.controller.dto.assessment.AssessmentResponseDto;
 import antony.lappa.inspectrum.repository.entity.AssessmentEntity;
 import antony.lappa.inspectrum.service.model.Assessment;
 import tools.jackson.core.JacksonException;

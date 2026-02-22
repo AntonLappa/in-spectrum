@@ -1,15 +1,14 @@
 package antony.lappa.inspectrum.controller;
 
-import antony.lappa.inspectrum.controller.dto.AdminUpdateUserRequestDto;
-import antony.lappa.inspectrum.controller.dto.UserResponseDto;
-import antony.lappa.inspectrum.controller.dto.UserUpdateRequestDto;
+import antony.lappa.inspectrum.controller.dto.user.AdminUpdateUserRequestDto;
+import antony.lappa.inspectrum.controller.dto.user.UserResponseDto;
+import antony.lappa.inspectrum.controller.dto.user.UserUpdateRequestDto;
 import antony.lappa.inspectrum.mapper.UserMapper;
 import antony.lappa.inspectrum.service.model.User;
 import antony.lappa.inspectrum.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package antony.lappa.inspectrum.controller.dto;
+package antony.lappa.inspectrum.controller.dto.assessment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
