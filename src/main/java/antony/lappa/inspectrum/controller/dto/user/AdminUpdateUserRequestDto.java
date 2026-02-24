@@ -1,5 +1,7 @@
-package antony.lappa.inspectrum.controller.dto;
+package antony.lappa.inspectrum.controller.dto.user;
 
+import antony.lappa.inspectrum.controller.dto.Role;
+import antony.lappa.inspectrum.controller.dto.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

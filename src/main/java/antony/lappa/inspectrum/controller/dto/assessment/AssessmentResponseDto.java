@@ -1,11 +1,10 @@
-package antony.lappa.inspectrum.controller.dto;
+package antony.lappa.inspectrum.controller.dto.assessment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
 

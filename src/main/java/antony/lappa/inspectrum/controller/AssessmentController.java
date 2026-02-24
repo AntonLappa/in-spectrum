@@ -1,7 +1,7 @@
 package antony.lappa.inspectrum.controller;
 
-import antony.lappa.inspectrum.controller.dto.AssessmentCreateRequestDto;
-import antony.lappa.inspectrum.controller.dto.AssessmentResponseDto;
+import antony.lappa.inspectrum.controller.dto.assessment.AssessmentCreateRequestDto;
+import antony.lappa.inspectrum.controller.dto.assessment.AssessmentResponseDto;
 import antony.lappa.inspectrum.mapper.AssessmentMapper;
 import antony.lappa.inspectrum.service.model.Assessment;
 import antony.lappa.inspectrum.service.assessment.AssessmentService;

@@ -1,8 +1,7 @@
-package antony.lappa.inspectrum.controller.dto;
+package antony.lappa.inspectrum.controller.dto.auth;
 
 import antony.lappa.inspectrum.service.model.UserType;
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

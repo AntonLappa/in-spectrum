@@ -1,4 +1,4 @@
-package antony.lappa.inspectrum.controller.dto;
+package antony.lappa.inspectrum.controller.dto.user;
 
 import antony.lappa.inspectrum.service.model.Role;
 import antony.lappa.inspectrum.service.model.UserType;

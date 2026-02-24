@@ -1,6 +1,6 @@
 package antony.lappa.inspectrum.service.assessment;
 
-import antony.lappa.inspectrum.controller.dto.AssessmentCreateRequestDto;
+import antony.lappa.inspectrum.controller.dto.assessment.AssessmentCreateRequestDto;
 import antony.lappa.inspectrum.service.model.Assessment;
 
 import java.util.UUID;

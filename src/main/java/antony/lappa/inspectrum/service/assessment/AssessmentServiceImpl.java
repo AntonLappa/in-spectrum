@@ -1,6 +1,6 @@
 package antony.lappa.inspectrum.service.assessment;
 
-import antony.lappa.inspectrum.controller.dto.AssessmentCreateRequestDto;
+import antony.lappa.inspectrum.controller.dto.assessment.AssessmentCreateRequestDto;
 import antony.lappa.inspectrum.exception.AssessmentNotFoundException;
 import antony.lappa.inspectrum.mapper.AssessmentMapper;
 import antony.lappa.inspectrum.repository.AssessmentRepository;

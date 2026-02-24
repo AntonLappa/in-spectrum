@@ -1,7 +1,7 @@
 package antony.lappa.inspectrum.mapper;
 
-import antony.lappa.inspectrum.controller.dto.SignUpRequestDto;
-import antony.lappa.inspectrum.controller.dto.UserResponseDto;
+import antony.lappa.inspectrum.controller.dto.auth.SignUpRequestDto;
+import antony.lappa.inspectrum.controller.dto.user.UserResponseDto;
 import antony.lappa.inspectrum.repository.entity.UserEntity;
 import antony.lappa.inspectrum.service.model.Role;
 import antony.lappa.inspectrum.service.model.User;

@@ -1,7 +1,7 @@
 package antony.lappa.inspectrum.service.user;
 
-import antony.lappa.inspectrum.controller.dto.AdminUpdateUserRequestDto;
-import antony.lappa.inspectrum.controller.dto.UserUpdateRequestDto;
+import antony.lappa.inspectrum.controller.dto.user.AdminUpdateUserRequestDto;
+import antony.lappa.inspectrum.controller.dto.user.UserUpdateRequestDto;
 import antony.lappa.inspectrum.exception.UserNotFoundException;
 import antony.lappa.inspectrum.mapper.UserMapper;
 import antony.lappa.inspectrum.repository.UserRepository;
