@@ -1,7 +1,7 @@
 package antony.lappa.inspectrum.service.plan;
 
 import antony.lappa.inspectrum.controller.dto.plans.PlanGenerateRequestDto;
-import antony.lappa.inspectrum.controller.dto.plans.PlanItemStatusUpdateRequestDto;
+import antony.lappa.inspectrum.controller.dto.plan_item.PlanItemStatusUpdateRequestDto;
 import antony.lappa.inspectrum.service.model.Plan;
 import antony.lappa.inspectrum.service.model.PlanItem;
 

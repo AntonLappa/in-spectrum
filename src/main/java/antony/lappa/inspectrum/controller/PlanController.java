@@ -2,8 +2,8 @@ package antony.lappa.inspectrum.controller;
 
 import antony.lappa.inspectrum.controller.dto.plans.PlanGenerateRequestDto;
 import antony.lappa.inspectrum.controller.dto.plans.PlanResponseDto;
-import antony.lappa.inspectrum.controller.dto.resource.PlanItemResponseDto;
-import antony.lappa.inspectrum.controller.dto.plans.PlanItemStatusUpdateRequestDto;
+import antony.lappa.inspectrum.controller.dto.plan_item.PlanItemResponseDto;
+import antony.lappa.inspectrum.controller.dto.plan_item.PlanItemStatusUpdateRequestDto;
 import antony.lappa.inspectrum.mapper.PlanItemMapper;
 import antony.lappa.inspectrum.mapper.PlanMapper;
 import antony.lappa.inspectrum.service.model.Plan;
@@ -12,7 +12,6 @@ import antony.lappa.inspectrum.service.plan.PlanService;
 import antony.lappa.inspectrum.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

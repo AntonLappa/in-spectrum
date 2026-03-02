@@ -1,6 +1,6 @@
 package antony.lappa.inspectrum.mapper;
 
-import antony.lappa.inspectrum.controller.dto.resource.PlanItemResponseDto;
+import antony.lappa.inspectrum.controller.dto.plan_item.PlanItemResponseDto;
 import antony.lappa.inspectrum.repository.entity.PlanItemEntity;
 import antony.lappa.inspectrum.service.model.PlanItem;
 import antony.lappa.inspectrum.service.model.Status;

@@ -1,5 +1,6 @@
 package antony.lappa.inspectrum.service.plan;
 
+import antony.lappa.inspectrum.controller.dto.plan_item.PlanItemStatusUpdateRequestDto;
 import antony.lappa.inspectrum.controller.dto.plans.PlanGenerateRequestDto;
 import antony.lappa.inspectrum.exception.PlanNotFoundException;
 import antony.lappa.inspectrum.mapper.PlanItemMapper;
@@ -75,7 +76,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public PlanItem updateItemStatus(UUID userId, UUID itemId,
-            antony.lappa.inspectrum.controller.dto.plans.PlanItemStatusUpdateRequestDto request) {
+            PlanItemStatusUpdateRequestDto request) {
         log.info("Updating status for item {} to {}", itemId, request.getStatus());
 
         PlanItemEntity itemEntity = planItemRepository.findById(itemId)
