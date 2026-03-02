@@ -3,9 +3,11 @@ package antony.lappa.inspectrum.controller;
 import antony.lappa.inspectrum.controller.dto.plans.PlanGenerateRequestDto;
 import antony.lappa.inspectrum.controller.dto.plans.PlanResponseDto;
 import antony.lappa.inspectrum.controller.dto.resource.PlanItemResponseDto;
+import antony.lappa.inspectrum.controller.dto.plans.PlanItemStatusUpdateRequestDto;
 import antony.lappa.inspectrum.mapper.PlanItemMapper;
 import antony.lappa.inspectrum.mapper.PlanMapper;
 import antony.lappa.inspectrum.service.model.Plan;
+import antony.lappa.inspectrum.service.model.PlanItem;
 import antony.lappa.inspectrum.service.plan.PlanService;
 import antony.lappa.inspectrum.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -59,10 +61,10 @@ public class PlanController {
     @PatchMapping("/items/{itemId}/status")
     public ResponseEntity<PlanItemResponseDto> updateItemStatus(
             @PathVariable UUID itemId,
-            @RequestBody antony.lappa.inspectrum.controller.dto.plans.PlanItemStatusUpdateRequestDto request) {
+            @RequestBody PlanItemStatusUpdateRequestDto request) {
 
         UUID userId = userService.findCurrentUser().getId();
-        antony.lappa.inspectrum.service.model.PlanItem updatedItem = planService.updateItemStatus(userId, itemId,
+        PlanItem updatedItem = planService.updateItemStatus(userId, itemId,
                 request);
 
         return ResponseEntity.ok(planItemMapper.toDtoItem(updatedItem));
