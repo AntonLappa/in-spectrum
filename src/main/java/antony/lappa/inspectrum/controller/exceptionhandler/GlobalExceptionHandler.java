@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({ UserNotFoundException.class, AssessmentNotFoundException.class, PlanNotFoundException.class })
+    @ExceptionHandler({UserNotFoundException.class,
+            AssessmentNotFoundException.class,
+            PlanNotFoundException.class,
+            ResourceNotFoundException.class})
     public ResponseEntity<ErrorDto> handleNotFoundException(RuntimeException e) {
 
         ErrorDto errorDto = new ErrorDto(e.getMessage());
