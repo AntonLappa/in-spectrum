@@ -15,7 +15,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({UserNotFoundException.class,
             AssessmentNotFoundException.class,
             PlanNotFoundException.class,
-            ResourceNotFoundException.class})
+            PlanItemNotFoundException.class,
+            ResourceNotFoundException.class,
+            ProgressNotFoundException.class,})
     public ResponseEntity<ErrorDto> handleNotFoundException(RuntimeException e) {
 
         ErrorDto errorDto = new ErrorDto(e.getMessage());
@@ -25,14 +27,25 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDto);
     }
 
-    @ExceptionHandler(UserAlreadyExistException.class)
-    public ResponseEntity<ErrorDto> handleUserAlreadyExistException(UserAlreadyExistException e) {
+    @ExceptionHandler({UserAlreadyExistException.class,
+            DuplicateProgressEntryException.class})
+    public ResponseEntity<ErrorDto> handleConflictException(RuntimeException e) {
 
         ErrorDto errorDto = new ErrorDto(e.getMessage());
 
         log.error(e.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDto);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDto> handleAccessDeniedException(AccessDeniedException e) {
+
+        ErrorDto errorDto = new ErrorDto(e.getMessage());
+
+        log.error(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorDto);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
@@ -43,6 +56,16 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDto);
+    }
+
+    @ExceptionHandler(MissingRequiredFieldException.class)
+    public ResponseEntity<ErrorDto> handleMissingRequiredFieldException(MissingRequiredFieldException e) {
+
+        ErrorDto errorDto = new ErrorDto(e.getMessage());
+
+        log.error(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDto);
     }
 
     @ExceptionHandler(Exception.class)
