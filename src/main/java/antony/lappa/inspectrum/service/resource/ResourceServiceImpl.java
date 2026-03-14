@@ -1,5 +1,6 @@
 package antony.lappa.inspectrum.service.resource;
 
+import antony.lappa.inspectrum.exception.AccessDeniedException;
 import antony.lappa.inspectrum.exception.ResourceNotFoundException;
 import antony.lappa.inspectrum.mapper.ResourceMapper;
 import antony.lappa.inspectrum.repository.ResourceRepository;
@@ -7,6 +8,9 @@ import antony.lappa.inspectrum.repository.entity.ResourceEntity;
 import antony.lappa.inspectrum.service.model.Resource;
 import antony.lappa.inspectrum.service.model.ResourceAudience;
 import antony.lappa.inspectrum.service.model.ResourceType;
+import antony.lappa.inspectrum.service.model.Role;
+import antony.lappa.inspectrum.service.model.User;
+import antony.lappa.inspectrum.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +28,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     private final ResourceRepository resourceRepository;
     private final ResourceMapper resourceMapper;
+    private final UserService userService;
 
     @Override
     public List<Resource> listResource(ResourceType type,
@@ -32,6 +37,12 @@ public class ResourceServiceImpl implements ResourceService {
             Boolean isPublished,
             int limit,
             int offset) {
+
+        User currentUser = userService.findCurrentUser();
+        if (currentUser.getRole() != Role.ADMIN) {
+            isPublished = true;
+        }
+
         int page = offset / limit;
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
 
@@ -61,6 +72,13 @@ public class ResourceServiceImpl implements ResourceService {
     public Resource getResourceById(UUID resourceId) {
         ResourceEntity resourceEntity = resourceRepository.findById(resourceId)
                 .orElseThrow(() -> new ResourceNotFoundException(resourceId));
-        return resourceMapper.toDomain(resourceEntity);
+        Resource resource = resourceMapper.toDomain(resourceEntity);
+
+        User currentUser = userService.findCurrentUser();
+        if (!resource.isPublished() && currentUser.getRole() != Role.ADMIN) {
+            throw new AccessDeniedException("Access Denied");
+        }
+
+        return resource;
     }
 }

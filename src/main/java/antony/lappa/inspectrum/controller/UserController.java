@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserResponseDto> updateCurrentUser(@RequestBody UserUpdateRequestDto request) {
+    public ResponseEntity<UserResponseDto> updateCurrentUser(@Valid @RequestBody UserUpdateRequestDto request) {
         User currentUser = userService.findCurrentUser();
         User updatedUser = userService.update(currentUser.getId(), request);
         return ResponseEntity.ok(userMapper.toDto(updatedUser));

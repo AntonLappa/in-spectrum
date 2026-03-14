@@ -24,18 +24,18 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String createToken(String id, Role role) {
 
-        // Calculate the expiration date based on the current time and expiration time in milliseconds
+        // Calculate the expiration date based on the current time and expiration time
+        // in milliseconds
         Date now = new Date();
         Date expiration = new Date(now.getTime() + jwtTtlMillis);
 
         // Build JWT claims
-        Claims claims =
-                Jwts.claims()
-                        .issuedAt(now)
-                        .expiration(expiration)
-                        .subject(id)
-                        .add(CLAIM_USER_ROLE, role.toString())
-                        .build();
+        Claims claims = Jwts.claims()
+                .issuedAt(now)
+                .expiration(expiration)
+                .subject(id)
+                .add(CLAIM_USER_ROLE, role.toString())
+                .build();
 
         // Create and sign the JWT token
         return Jwts.builder().claims(claims).signWith(getSecretKey()).compact();
@@ -67,13 +67,12 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Role getRole(String token) {
 
-        String typeValue =
-                Jwts.parser()
-                        .verifyWith(getSecretKey())
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload()
-                        .get(CLAIM_USER_ROLE, String.class);
+        String typeValue = Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get(CLAIM_USER_ROLE, String.class);
 
         return Role.valueOf(typeValue);
     }

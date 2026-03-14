@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class ProgressController {
     @PostMapping("/{planItemId}/progress")
     public ResponseEntity<ProgressEntryResponseDto> createProgressEntry(
             @PathVariable UUID planItemId,
-            @RequestBody(required = false) ProgressCreateRequestDto request) {
+            @Valid @RequestBody(required = false) ProgressCreateRequestDto request) {
 
         UUID userId = userService.findCurrentUser().getId();
         Progress progress = progressService.createProgressEntry(userId, planItemId, request);
