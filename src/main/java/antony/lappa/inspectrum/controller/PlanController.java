@@ -13,6 +13,7 @@ import antony.lappa.inspectrum.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class PlanController {
     private final PlanService planService;
 
     @PostMapping("/generate")
-    public ResponseEntity<PlanResponseDto> generatePlan(@RequestBody PlanGenerateRequestDto request) {
+    public ResponseEntity<PlanResponseDto> generatePlan(@Valid @RequestBody PlanGenerateRequestDto request) {
 
         UUID userId = userService.findCurrentUser().getId();
         Plan plan = planService.generate(userId, request);

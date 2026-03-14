@@ -55,7 +55,7 @@ public class UserMapper {
         entity.setId(user.getId());
         entity.setName(user.getName());
         entity.setEmail(user.getEmail());
-        entity.setPasswordHash(null); // Should be handled by service
+        entity.setPasswordHash(null);
         entity.setPhoneNumber(user.getPhoneNumber());
         entity.setUserType(antony.lappa.inspectrum.repository.entity.UserType.valueOf(user.getUserType().name()));
         entity.setRole(antony.lappa.inspectrum.repository.entity.Role.valueOf(user.getRole().name()));

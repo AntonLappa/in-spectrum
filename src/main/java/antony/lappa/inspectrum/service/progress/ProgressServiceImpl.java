@@ -3,7 +3,6 @@ package antony.lappa.inspectrum.service.progress;
 import antony.lappa.inspectrum.controller.dto.progress.ProgressCreateRequestDto;
 import antony.lappa.inspectrum.exception.AccessDeniedException;
 import antony.lappa.inspectrum.exception.DuplicateProgressEntryException;
-import antony.lappa.inspectrum.exception.MissingRequiredFieldException;
 import antony.lappa.inspectrum.exception.PlanItemNotFoundException;
 import antony.lappa.inspectrum.exception.PlanNotFoundException;
 import antony.lappa.inspectrum.mapper.ProgressMapper;
@@ -40,10 +39,6 @@ public class ProgressServiceImpl implements ProgressService {
         validatePlanItemOwnership(userId, planItemId);
 
         ProgressCreateRequestDto effectiveRequest = request != null ? request : new ProgressCreateRequestDto();
-
-        if (effectiveRequest.getEntryDate() == null) {
-            throw new MissingRequiredFieldException("entry_date is required");
-        }
 
         progressRepository.findByPlanItemIdAndEntryDate(planItemId, effectiveRequest.getEntryDate())
                 .ifPresent(existing -> {

@@ -34,9 +34,6 @@ public class PlanItemMapper {
         dto.setId(item.getId());
         dto.setStatus(antony.lappa.inspectrum.controller.dto.Status.valueOf(item.getStatus().name()));
         dto.setSortOrder(item.getSortOrder());
-
-        // Resource filling will be implemented once ResourceService is ready
-        // Currently setting as null since PlanItem only holds resourceId
         dto.setResource(null);
 
         return dto;
