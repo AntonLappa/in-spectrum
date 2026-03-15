@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @Secured("ADMIN")
-    @GetMapping("/{email}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable String email) {
         User user = userService.findByEmail(email);
         return ResponseEntity.ok(userMapper.toDto(user));

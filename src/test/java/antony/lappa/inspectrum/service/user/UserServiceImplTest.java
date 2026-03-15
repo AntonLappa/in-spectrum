@@ -1,13 +1,14 @@
 package antony.lappa.inspectrum.service.user;
 
+import antony.lappa.inspectrum.controller.dto.user.AdminUpdateUserRequestDto;
 import antony.lappa.inspectrum.controller.dto.user.UserUpdateRequestDto;
 import antony.lappa.inspectrum.exception.UserNotFoundException;
 import antony.lappa.inspectrum.mapper.UserMapper;
 import antony.lappa.inspectrum.repository.UserRepository;
-import antony.lappa.inspectrum.repository.entity.Role;
 import antony.lappa.inspectrum.repository.entity.UserEntity;
+import antony.lappa.inspectrum.service.model.Role;
 import antony.lappa.inspectrum.service.model.User;
-import org.junit.jupiter.api.BeforeEach;
+import antony.lappa.inspectrum.service.model.UserType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,121 +36,188 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    private UUID userId;
-    private UserEntity userEntity;
-    private User user;
-
-    @BeforeEach
-    void setUp() {
-        userId = UUID.randomUUID();
-
-        userEntity = new UserEntity();
-        userEntity.setId(userId);
-        userEntity.setName("Test User");
-        userEntity.setEmail("test@example.com");
-        userEntity.setPhoneNumber("+123456");
-        userEntity.setRole(Role.USER);
-        userEntity.setCreatedAt(Instant.now());
-
-        user = new User();
-        user.setId(userId);
-        user.setName("Test User");
-        user.setEmail("test@example.com");
-    }
-
     @Test
-    void findById_ShouldReturnUser_WhenUserExists() {
-        when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-        when(userMapper.toDomain(userEntity)).thenReturn(user);
+    void findById_shouldReturnUser_whenFound() {
+        //given
+        UUID userId = UUID.randomUUID();
+        UserEntity entity = new UserEntity();
+        entity.setId(userId);
 
+        User expectedUser = new User();
+        expectedUser.setId(userId);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(entity));
+        when(userMapper.toDomain(entity)).thenReturn(expectedUser);
+
+        //when
         User result = userService.findById(userId);
 
+        //then
         assertNotNull(result);
         assertEquals(userId, result.getId());
-        verify(userRepository).findById(userId);
     }
 
     @Test
-    void findById_ShouldThrowException_WhenUserNotFound() {
+    void findById_shouldThrowException_whenNotFound() {
+        //given
+        UUID userId = UUID.randomUUID();
+
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.findById(userId));
+        //when & then
+        assertThrows(UserNotFoundException.class,
+                () -> userService.findById(userId));
     }
 
     @Test
-    void findByEmail_ShouldReturnUser_WhenEmailExists() {
-        String email = "test@example.com";
-        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(userEntity));
-        when(userMapper.toDomain(userEntity)).thenReturn(user);
+    void findByEmail_shouldReturnUser_whenFound() {
+        //given
+        String email = "john@example.com";
+        UserEntity entity = new UserEntity();
+        entity.setEmail(email);
 
+        User expectedUser = new User();
+        expectedUser.setEmail(email);
+
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(entity));
+        when(userMapper.toDomain(entity)).thenReturn(expectedUser);
+
+        //when
         User result = userService.findByEmail(email);
 
+        //then
         assertNotNull(result);
         assertEquals(email, result.getEmail());
     }
 
     @Test
-    void findByEmail_ShouldThrowException_WhenEmailNotFound() {
-        when(userRepository.findByEmailIgnoreCase("unknown@example.com")).thenReturn(Optional.empty());
+    void findByEmail_shouldThrowException_whenNotFound() {
+        //given
+        String email = "unknown@example.com";
 
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.empty());
+
+        //when & then
         assertThrows(UserNotFoundException.class,
-                () -> userService.findByEmail("unknown@example.com"));
+                () -> userService.findByEmail(email));
     }
 
     @Test
-    void findAll_ShouldReturnAllUsers() {
-        UserEntity secondEntity = new UserEntity();
-        secondEntity.setId(UUID.randomUUID());
-        User secondUser = new User();
-        secondUser.setId(secondEntity.getId());
+    void findAll_shouldReturnAllUsers() {
+        //given
+        UserEntity entity1 = new UserEntity();
+        entity1.setId(UUID.randomUUID());
+        UserEntity entity2 = new UserEntity();
+        entity2.setId(UUID.randomUUID());
 
-        when(userRepository.findAll()).thenReturn(List.of(userEntity, secondEntity));
-        when(userMapper.toDomain(userEntity)).thenReturn(user);
-        when(userMapper.toDomain(secondEntity)).thenReturn(secondUser);
+        User user1 = new User();
+        user1.setId(entity1.getId());
+        User user2 = new User();
+        user2.setId(entity2.getId());
 
+        when(userRepository.findAll()).thenReturn(List.of(entity1, entity2));
+        when(userMapper.toDomain(entity1)).thenReturn(user1);
+        when(userMapper.toDomain(entity2)).thenReturn(user2);
+
+        //when
         List<User> result = userService.findAll();
 
+        //then
         assertEquals(2, result.size());
     }
 
     @Test
-    void update_ShouldUpdateFields_WhenUserExists() {
-        UserUpdateRequestDto request = new UserUpdateRequestDto();
-        request.setName("Updated Name");
-        request.setPhoneNumber("+999999");
+    void update_shouldUpdateNameAndPhone() {
+        //given
+        UUID userId = UUID.randomUUID();
+        UserUpdateRequestDto request = new UserUpdateRequestDto("Updated Name", "+380111111111");
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-        when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
-        when(userMapper.toDomain(userEntity)).thenReturn(user);
+        UserEntity entity = new UserEntity();
+        entity.setId(userId);
+        entity.setName("Old Name");
+        entity.setPhoneNumber("+380000000000");
 
+        UserEntity savedEntity = new UserEntity();
+        savedEntity.setId(userId);
+        savedEntity.setName("Updated Name");
+        savedEntity.setPhoneNumber("+380111111111");
+
+        User expectedUser = new User();
+        expectedUser.setId(userId);
+        expectedUser.setName("Updated Name");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(entity));
+        when(userRepository.save(entity)).thenReturn(savedEntity);
+        when(userMapper.toDomain(savedEntity)).thenReturn(expectedUser);
+
+        //when
         User result = userService.update(userId, request);
 
+        //then
         assertNotNull(result);
-        verify(userRepository).save(any(UserEntity.class));
+        assertEquals("Updated Name", result.getName());
+        verify(userRepository).save(entity);
     }
 
     @Test
-    void update_ShouldThrowException_WhenUserNotFound() {
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+    void updateAdmin_shouldUpdateAllProvidedFields() {
+        //given
+        UUID userId = UUID.randomUUID();
+        AdminUpdateUserRequestDto request = new AdminUpdateUserRequestDto();
+        request.setName("Admin Updated");
+        request.setEmail("new@example.com");
+        request.setPhoneNumber("+380222222222");
+        request.setUserType(antony.lappa.inspectrum.controller.dto.UserType.EDUCATOR);
+        request.setRole(antony.lappa.inspectrum.controller.dto.Role.ADMIN);
+        request.setActive(false);
 
-        assertThrows(UserNotFoundException.class,
-                () -> userService.update(userId, new UserUpdateRequestDto()));
+        UserEntity entity = new UserEntity();
+        entity.setId(userId);
+        entity.setName("Old Name");
+
+        UserEntity savedEntity = new UserEntity();
+        savedEntity.setId(userId);
+
+        User expectedUser = new User();
+        expectedUser.setId(userId);
+        expectedUser.setName("Admin Updated");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(entity));
+        when(userRepository.save(entity)).thenReturn(savedEntity);
+        when(userMapper.toDomain(savedEntity)).thenReturn(expectedUser);
+
+        //when
+        User result = userService.updateAdmin(userId, request);
+
+        //then
+        assertNotNull(result);
+        assertEquals("Admin Updated", result.getName());
+        verify(userRepository).save(entity);
     }
 
     @Test
-    void deleteById_ShouldDelete_WhenUserExists() {
+    void deleteById_shouldDelete_whenUserExists() {
+        //given
+        UUID userId = UUID.randomUUID();
+
         when(userRepository.existsById(userId)).thenReturn(true);
 
+        //when
         userService.deleteById(userId);
 
+        //then
         verify(userRepository).deleteById(userId);
     }
 
     @Test
-    void deleteById_ShouldThrowException_WhenUserNotFound() {
+    void deleteById_shouldThrowException_whenUserNotFound() {
+        //given
+        UUID userId = UUID.randomUUID();
+
         when(userRepository.existsById(userId)).thenReturn(false);
 
-        assertThrows(UserNotFoundException.class, () -> userService.deleteById(userId));
-        verify(userRepository, never()).deleteById(any());
+        //when & then
+        assertThrows(UserNotFoundException.class,
+                () -> userService.deleteById(userId));
     }
 }

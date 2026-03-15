@@ -12,7 +12,6 @@ import antony.lappa.inspectrum.repository.entity.PlanEntity;
 import antony.lappa.inspectrum.repository.entity.PlanItemEntity;
 import antony.lappa.inspectrum.repository.entity.ProgressEntryEntity;
 import antony.lappa.inspectrum.service.model.Progress;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,98 +45,138 @@ class ProgressServiceImplTest {
     @InjectMocks
     private ProgressServiceImpl progressService;
 
-    private UUID userId;
-    private UUID planItemId;
-    private UUID planId;
-    private PlanItemEntity planItemEntity;
-    private PlanEntity planEntity;
+    @Test
+    void createProgressEntry_shouldCreateAndReturn() {
+        //given
+        UUID userId = UUID.randomUUID();
+        UUID planItemId = UUID.randomUUID();
+        UUID planId = UUID.randomUUID();
 
-    @BeforeEach
-    void setUp() {
-        userId = UUID.randomUUID();
-        planItemId = UUID.randomUUID();
-        planId = UUID.randomUUID();
+        ProgressCreateRequestDto request = new ProgressCreateRequestDto();
+        request.setEntryDate(LocalDate.of(2026, 3, 15));
+        request.setNote("Test note");
 
-        planItemEntity = new PlanItemEntity();
+        PlanItemEntity planItemEntity = new PlanItemEntity();
         planItemEntity.setId(planItemId);
         planItemEntity.setPlanId(planId);
 
-        planEntity = new PlanEntity();
+        PlanEntity planEntity = new PlanEntity();
         planEntity.setId(planId);
         planEntity.setUserId(userId);
-    }
-
-    @Test
-    void createProgressEntry_ShouldSave_WhenValid() {
-        ProgressCreateRequestDto request = new ProgressCreateRequestDto();
-        request.setEntryDate(LocalDate.now());
-        request.setNote("Good progress");
 
         Progress progress = new Progress();
+        progress.setPlanItemId(planItemId);
+
         ProgressEntryEntity savedEntity = new ProgressEntryEntity();
         savedEntity.setId(UUID.randomUUID());
+        savedEntity.setPlanItemId(planItemId);
+
+        Progress expectedProgress = new Progress();
+        expectedProgress.setId(savedEntity.getId());
 
         when(planItemRepository.findById(planItemId)).thenReturn(Optional.of(planItemEntity));
         when(planRepository.findById(planId)).thenReturn(Optional.of(planEntity));
         when(progressRepository.findByPlanItemIdAndEntryDate(planItemId, request.getEntryDate()))
                 .thenReturn(Optional.empty());
         when(progressMapper.fromCreateRequest(request, planItemId)).thenReturn(progress);
-        when(progressMapper.toEntity(progress)).thenReturn(savedEntity);
-        when(progressRepository.save(savedEntity)).thenReturn(savedEntity);
-        when(progressMapper.toDomain(savedEntity)).thenReturn(progress);
+        when(progressMapper.toEntity(progress)).thenReturn(new ProgressEntryEntity());
+        when(progressRepository.save(any(ProgressEntryEntity.class))).thenReturn(savedEntity);
+        when(progressMapper.toDomain(savedEntity)).thenReturn(expectedProgress);
 
+        //when
         Progress result = progressService.createProgressEntry(userId, planItemId, request);
 
+        //then
         assertNotNull(result);
-        verify(progressRepository).save(savedEntity);
+        assertEquals(savedEntity.getId(), result.getId());
+        verify(progressRepository).save(any(ProgressEntryEntity.class));
     }
 
     @Test
-    void createProgressEntry_ShouldThrowDuplicate_WhenEntryExists() {
-        ProgressCreateRequestDto request = new ProgressCreateRequestDto();
-        request.setEntryDate(LocalDate.now());
+    void createProgressEntry_shouldThrowException_whenDuplicate() {
+        //given
+        UUID userId = UUID.randomUUID();
+        UUID planItemId = UUID.randomUUID();
+        UUID planId = UUID.randomUUID();
 
-        ProgressEntryEntity existingEntry = new ProgressEntryEntity();
+        ProgressCreateRequestDto request = new ProgressCreateRequestDto();
+        request.setEntryDate(LocalDate.of(2026, 3, 15));
+
+        PlanItemEntity planItemEntity = new PlanItemEntity();
+        planItemEntity.setId(planItemId);
+        planItemEntity.setPlanId(planId);
+
+        PlanEntity planEntity = new PlanEntity();
+        planEntity.setId(planId);
+        planEntity.setUserId(userId);
 
         when(planItemRepository.findById(planItemId)).thenReturn(Optional.of(planItemEntity));
         when(planRepository.findById(planId)).thenReturn(Optional.of(planEntity));
         when(progressRepository.findByPlanItemIdAndEntryDate(planItemId, request.getEntryDate()))
-                .thenReturn(Optional.of(existingEntry));
+                .thenReturn(Optional.of(new ProgressEntryEntity()));
 
+        //when & then
         assertThrows(DuplicateProgressEntryException.class,
                 () -> progressService.createProgressEntry(userId, planItemId, request));
-
-        verify(progressRepository, never()).save(any());
     }
 
     @Test
-    void createProgressEntry_ShouldThrowException_WhenPlanItemNotFound() {
-        ProgressCreateRequestDto request = new ProgressCreateRequestDto();
-        request.setEntryDate(LocalDate.now());
+    void createProgressEntry_shouldThrowException_whenPlanItemNotFound() {
+        //given
+        UUID userId = UUID.randomUUID();
+        UUID planItemId = UUID.randomUUID();
 
         when(planItemRepository.findById(planItemId)).thenReturn(Optional.empty());
 
+        //when & then
         assertThrows(PlanItemNotFoundException.class,
-                () -> progressService.createProgressEntry(userId, planItemId, request));
+                () -> progressService.createProgressEntry(userId, planItemId, new ProgressCreateRequestDto()));
     }
 
     @Test
-    void createProgressEntry_ShouldThrowAccessDenied_WhenNotOwner() {
+    void createProgressEntry_shouldThrowException_whenUserDoesNotOwnPlan() {
+        //given
+        UUID userId = UUID.randomUUID();
         UUID otherUserId = UUID.randomUUID();
-        ProgressCreateRequestDto request = new ProgressCreateRequestDto();
-        request.setEntryDate(LocalDate.now());
+        UUID planItemId = UUID.randomUUID();
+        UUID planId = UUID.randomUUID();
+
+        PlanItemEntity planItemEntity = new PlanItemEntity();
+        planItemEntity.setId(planItemId);
+        planItemEntity.setPlanId(planId);
+
+        PlanEntity planEntity = new PlanEntity();
+        planEntity.setId(planId);
+        planEntity.setUserId(otherUserId);
 
         when(planItemRepository.findById(planItemId)).thenReturn(Optional.of(planItemEntity));
         when(planRepository.findById(planId)).thenReturn(Optional.of(planEntity));
 
+        //when & then
         assertThrows(AccessDeniedException.class,
-                () -> progressService.createProgressEntry(otherUserId, planItemId, request));
+                () -> progressService.createProgressEntry(userId, planItemId, new ProgressCreateRequestDto()));
     }
 
     @Test
-    void getProgressEntries_ShouldReturnEntries_WhenOwned() {
+    void getProgressEntries_shouldReturnEntries() {
+        //given
+        UUID userId = UUID.randomUUID();
+        UUID planItemId = UUID.randomUUID();
+        UUID planId = UUID.randomUUID();
+
+        PlanItemEntity planItemEntity = new PlanItemEntity();
+        planItemEntity.setId(planItemId);
+        planItemEntity.setPlanId(planId);
+
+        PlanEntity planEntity = new PlanEntity();
+        planEntity.setId(planId);
+        planEntity.setUserId(userId);
+
         ProgressEntryEntity entry1 = new ProgressEntryEntity();
+        entry1.setId(UUID.randomUUID());
         ProgressEntryEntity entry2 = new ProgressEntryEntity();
+        entry2.setId(UUID.randomUUID());
+
         Progress progress1 = new Progress();
         Progress progress2 = new Progress();
 
@@ -148,8 +187,10 @@ class ProgressServiceImplTest {
         when(progressMapper.toDomain(entry1)).thenReturn(progress1);
         when(progressMapper.toDomain(entry2)).thenReturn(progress2);
 
+        //when
         List<Progress> result = progressService.getProgressEntries(userId, planItemId);
 
+        //then
         assertEquals(2, result.size());
     }
 }

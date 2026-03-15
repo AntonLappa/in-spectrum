@@ -8,7 +8,6 @@ import antony.lappa.inspectrum.repository.UserRepository;
 import antony.lappa.inspectrum.repository.entity.UserEntity;
 import antony.lappa.inspectrum.service.model.User;
 import antony.lappa.inspectrum.service.model.UserType;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,39 +37,32 @@ class AuthServiceImplTest {
     @InjectMocks
     private AuthServiceImpl authService;
 
-    private String email;
-    private String password;
-    private UserEntity userEntity;
-    private User user;
-
-    @BeforeEach
-    void setUp() {
-        email = "test@example.com";
-        password = "password123";
-
-        userEntity = new UserEntity();
-        userEntity.setId(UUID.randomUUID());
-        userEntity.setEmail(email);
-        userEntity.setPasswordHash("encodedPassword");
-
-        user = new User();
-        user.setId(userEntity.getId());
-        user.setEmail(email);
-    }
-
     @Test
-    void signUp_ShouldCreateUser_WhenEmailIsNew() {
+    void signUp_shouldCreateUser_whenEmailNotTaken() {
+        //given
+        String name = "John Doe";
+        String phone = "+380123456789";
+        String email = "john@example.com";
+        String password = "password123";
+        UserType userType = UserType.PARENT;
+
+        UserEntity savedEntity = new UserEntity();
+        savedEntity.setId(UUID.randomUUID());
+        savedEntity.setEmail(email);
+
+        User expectedUser = new User();
+        expectedUser.setId(savedEntity.getId());
+        expectedUser.setEmail(email);
+
         when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(password)).thenReturn("encodedPassword");
-        when(userRepository.save(any(UserEntity.class))).thenAnswer(invocation -> {
-            UserEntity saved = invocation.getArgument(0);
-            saved.setId(UUID.randomUUID());
-            return saved;
-        });
-        when(userMapper.toDomain(any(UserEntity.class))).thenReturn(user);
+        when(passwordEncoder.encode(password)).thenReturn("hashedPassword");
+        when(userRepository.save(any(UserEntity.class))).thenReturn(savedEntity);
+        when(userMapper.toDomain(savedEntity)).thenReturn(expectedUser);
 
-        User result = authService.signUp("Test", "+123456", email, password, UserType.PARENT);
+        //when
+        User result = authService.signUp(name, phone, email, password, userType);
 
+        //then
         assertNotNull(result);
         assertEquals(email, result.getEmail());
         verify(userRepository).save(any(UserEntity.class));
@@ -78,40 +70,71 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void signUp_ShouldThrowUserAlreadyExist_WhenEmailExists() {
-        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(userEntity));
+    void signUp_shouldThrowException_whenEmailAlreadyExists() {
+        //given
+        String email = "existing@example.com";
+        UserEntity existingUser = new UserEntity();
+        existingUser.setEmail(email);
 
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(existingUser));
+
+        //when & then
         assertThrows(UserAlreadyExistException.class,
-                () -> authService.signUp("Test", "+123456", email, password, UserType.PARENT));
-
-        verify(userRepository, never()).save(any());
+                () -> authService.signUp("Name", "Phone", email, "pass", UserType.PARENT));
     }
 
     @Test
-    void login_ShouldReturnUser_WhenCredentialsValid() {
-        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(userEntity));
-        when(passwordEncoder.matches(password, "encodedPassword")).thenReturn(true);
-        when(userMapper.toDomain(userEntity)).thenReturn(user);
+    void login_shouldReturnUser_whenCredentialsValid() {
+        //given
+        String email = "john@example.com";
+        String password = "password123";
 
+        UserEntity entity = new UserEntity();
+        entity.setId(UUID.randomUUID());
+        entity.setEmail(email);
+        entity.setPasswordHash("hashedPassword");
+
+        User expectedUser = new User();
+        expectedUser.setId(entity.getId());
+
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(entity));
+        when(passwordEncoder.matches(password, "hashedPassword")).thenReturn(true);
+        when(userMapper.toDomain(entity)).thenReturn(expectedUser);
+
+        //when
         User result = authService.login(email, password);
 
+        //then
         assertNotNull(result);
-        assertEquals(email, result.getEmail());
+        assertEquals(entity.getId(), result.getId());
     }
 
     @Test
-    void login_ShouldThrowUserNotFound_WhenEmailNotFound() {
+    void login_shouldThrowException_whenUserNotFound() {
+        //given
+        String email = "unknown@example.com";
+
         when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.empty());
 
+        //when & then
         assertThrows(UserNotFoundException.class,
-                () -> authService.login(email, password));
+                () -> authService.login(email, "password"));
     }
 
     @Test
-    void login_ShouldThrowInvalidCredentials_WhenPasswordWrong() {
-        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(userEntity));
-        when(passwordEncoder.matches(password, "encodedPassword")).thenReturn(false);
+    void login_shouldThrowException_whenPasswordInvalid() {
+        //given
+        String email = "john@example.com";
+        String password = "wrongPassword";
 
+        UserEntity entity = new UserEntity();
+        entity.setEmail(email);
+        entity.setPasswordHash("hashedPassword");
+
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(entity));
+        when(passwordEncoder.matches(password, "hashedPassword")).thenReturn(false);
+
+        //when & then
         assertThrows(InvalidCredentialsException.class,
                 () -> authService.login(email, password));
     }

@@ -17,50 +17,73 @@ class TokenServiceImplTest {
     void setUp() {
         tokenService = new TokenServiceImpl();
         ReflectionTestUtils.setField(tokenService, "jwtSecret",
-                "ThisIsATestSecretKeyThatMustBeAtLeast256BitsLong!");
+                "super-secret-key-that-is-at-least-32-bytes-long-for-hmac-sha256");
         ReflectionTestUtils.setField(tokenService, "jwtTtlMillis", 3600000L);
     }
 
     @Test
-    void createToken_ShouldReturnValidJwt() {
-        String userId = UUID.randomUUID().toString();
+    void createToken_shouldReturnValidJwt() {
+        //given
+        String id = UUID.randomUUID().toString();
+        Role role = Role.USER;
 
-        String token = tokenService.createToken(userId, Role.USER);
+        //when
+        String token = tokenService.createToken(id, role);
 
+        //then
         assertNotNull(token);
         assertFalse(token.isEmpty());
     }
 
     @Test
-    void isValidToken_ShouldReturnTrue_WhenTokenValid() {
-        String userId = UUID.randomUUID().toString();
-        String token = tokenService.createToken(userId, Role.USER);
+    void isValidToken_shouldReturnTrue_forValidToken() {
+        //given
+        String id = UUID.randomUUID().toString();
+        String token = tokenService.createToken(id, Role.USER);
 
-        assertTrue(tokenService.isValidToken(token));
+        //when
+        boolean result = tokenService.isValidToken(token);
+
+        //then
+        assertTrue(result);
     }
 
     @Test
-    void isValidToken_ShouldReturnFalse_WhenTokenInvalid() {
-        assertFalse(tokenService.isValidToken("invalid.token.value"));
+    void isValidToken_shouldReturnFalse_forInvalidToken() {
+        //given
+        String invalidToken = "invalid.token.value";
+
+        //when
+        boolean result = tokenService.isValidToken(invalidToken);
+
+        //then
+        assertFalse(result);
     }
 
     @Test
-    void getId_ShouldReturnSubject() {
-        String userId = UUID.randomUUID().toString();
-        String token = tokenService.createToken(userId, Role.USER);
+    void getId_shouldReturnSubject() {
+        //given
+        String id = UUID.randomUUID().toString();
+        String token = tokenService.createToken(id, Role.USER);
 
+        //when
         String result = tokenService.getId(token);
 
-        assertEquals(userId, result);
+        //then
+        assertEquals(id, result);
     }
 
     @Test
-    void getRole_ShouldReturnRole() {
-        String userId = UUID.randomUUID().toString();
-        String token = tokenService.createToken(userId, Role.ADMIN);
+    void getRole_shouldReturnRole() {
+        //given
+        String id = UUID.randomUUID().toString();
+        Role role = Role.ADMIN;
+        String token = tokenService.createToken(id, role);
 
+        //when
         Role result = tokenService.getRole(token);
 
+        //then
         assertEquals(Role.ADMIN, result);
     }
 }
