@@ -20,6 +20,7 @@ public class ResourceUpdateRequestDto {
     private ResourceType type;
     private ResourceAudience audience;
     private String url;
+    private String content;
     private Boolean published;
 
 }

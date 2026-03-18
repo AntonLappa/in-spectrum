@@ -39,8 +39,11 @@ public class ResourceEntity {
     @Enumerated(EnumType.STRING)
     private ResourceAudience audience;
 
-    @Column(name = "url", nullable = false)
+    @Column(name = "url")
     private String url;
+
+    @Column(name = "content")
+    private String content;
 
     @Column(name = "created_at")
     private Instant createdAt;

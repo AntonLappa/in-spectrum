@@ -15,6 +15,7 @@ public class Resource {
     private ResourceType type;
     private ResourceAudience audience;
     private String url;
+    private String content;
     private boolean published;
     private UUID createdBy;
     private Instant createdAt;
