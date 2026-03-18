@@ -1,6 +1,7 @@
 package antony.lappa.inspectrum.service.resource;
 
 import antony.lappa.inspectrum.exception.AccessDeniedException;
+import antony.lappa.inspectrum.exception.InvalidResourceContentException;
 import antony.lappa.inspectrum.exception.ResourceNotFoundException;
 import antony.lappa.inspectrum.mapper.ResourceMapper;
 import antony.lappa.inspectrum.repository.ResourceRepository;
@@ -81,4 +82,37 @@ public class ResourceServiceImpl implements ResourceService {
 
         return resource;
     }
+
+    @Override
+    public Resource createResource(Resource resource) {
+        validateResourceContent(resource);
+
+        User currentUser = userService.findCurrentUser();
+        resource.setCreatedBy(currentUser.getId());
+
+        ResourceEntity entity = resourceMapper.toEntity(resource);
+        ResourceEntity savedEntity = resourceRepository.save(entity);
+
+        log.info("Resource created with id: {}", savedEntity.getId());
+        return resourceMapper.toDomain(savedEntity);
+    }
+
+    private void validateResourceContent(Resource resource) {
+        if (resource.getType() == ResourceType.TEXT) {
+            if (resource.getContent() == null || resource.getContent().isBlank()) {
+                throw new InvalidResourceContentException("Content is required for TEXT resources");
+            }
+            if (resource.getUrl() != null && !resource.getUrl().isBlank()) {
+                throw new InvalidResourceContentException("URL must be empty for TEXT resources");
+            }
+        } else if (resource.getType() == ResourceType.VIDEO) {
+            if (resource.getUrl() == null || resource.getUrl().isBlank()) {
+                throw new InvalidResourceContentException("URL is required for VIDEO resources");
+            }
+            if (resource.getContent() != null && !resource.getContent().isBlank()) {
+                throw new InvalidResourceContentException("Content must be empty for VIDEO resources");
+            }
+        }
+    }
 }
+

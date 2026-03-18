@@ -17,4 +17,6 @@ public interface ResourceService {
                                 int offset);
 
     Resource getResourceById(UUID resourceId);
+
+    Resource createResource(Resource resource);
 }

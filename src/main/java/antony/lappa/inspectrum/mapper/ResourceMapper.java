@@ -22,6 +22,7 @@ public class ResourceMapper {
         resource.setTitle(resourceEntity.getTitle());
         resource.setDescription(resourceEntity.getDescription());
         resource.setUrl(resourceEntity.getUrl());
+        resource.setContent(resourceEntity.getContent());
         resource.setPublished(resourceEntity.isPublished());
         resource.setCreatedBy(resourceEntity.getCreatedBy());
         resource.setCreatedAt(resourceEntity.getCreatedAt());
@@ -39,6 +40,7 @@ public class ResourceMapper {
         resourceEntity.setTitle(resource.getTitle());
         resourceEntity.setDescription(resource.getDescription());
         resourceEntity.setUrl(resource.getUrl());
+        resourceEntity.setContent(resource.getContent());
         resourceEntity.setPublished(resource.isPublished());
         resourceEntity.setCreatedBy(resource.getCreatedBy());
         resourceEntity.setCreatedAt(resource.getCreatedAt());
@@ -54,6 +56,7 @@ public class ResourceMapper {
         resourceResponseDto.setTitle(resource.getTitle());
         resourceResponseDto.setDescription(resource.getDescription());
         resourceResponseDto.setUrl(resource.getUrl());
+        resourceResponseDto.setContent(resource.getContent());
         resourceResponseDto.setType(antony.lappa.inspectrum.controller.dto.ResourceType.valueOf(resource.getType().name()));
         resourceResponseDto.setAudience(antony.lappa.inspectrum.controller.dto.ResourceAudience.valueOf(resource.getAudience().name()));
         resourceResponseDto.setPublished(resource.isPublished());
@@ -70,6 +73,7 @@ public class ResourceMapper {
         resource.setTitle(requestDto.getTitle());
         resource.setDescription(requestDto.getDescription());
         resource.setUrl(requestDto.getUrl());
+        resource.setContent(requestDto.getContent());
         resource.setAudience(ResourceAudience.valueOf(requestDto.getAudience().name()));
         resource.setType(ResourceType.valueOf(requestDto.getType().name()));
         resource.setPublished(requestDto.getPublished());

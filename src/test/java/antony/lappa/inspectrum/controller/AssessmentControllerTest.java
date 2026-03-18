@@ -3,6 +3,7 @@ package antony.lappa.inspectrum.controller;
 import antony.lappa.inspectrum.controller.dto.assessment.AssessmentResponseDto;
 import antony.lappa.inspectrum.mapper.AssessmentMapper;
 import antony.lappa.inspectrum.service.assessment.AssessmentService;
+import antony.lappa.inspectrum.service.assessment.AssessmentTemplateService;
 import antony.lappa.inspectrum.service.model.Assessment;
 import antony.lappa.inspectrum.service.model.User;
 import antony.lappa.inspectrum.service.token.TokenService;
@@ -16,6 +17,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,6 +38,9 @@ class AssessmentControllerTest {
     private AssessmentService assessmentService;
 
     @MockitoBean
+    private AssessmentTemplateService assessmentTemplateService;
+
+    @MockitoBean
     private AssessmentMapper assessmentMapper;
 
     @MockitoBean
@@ -43,6 +48,23 @@ class AssessmentControllerTest {
 
     @MockitoBean
     private TokenService tokenService;
+
+    @Test
+    void getAssessmentTemplate_shouldReturn200() throws Exception {
+        Map<String, Object> template = Map.of(
+                "id", "sensory-assessment-v1",
+                "title", "Сенсорна анкета",
+                "questions", List.of()
+        );
+
+        when(assessmentTemplateService.getTemplate()).thenReturn(template);
+
+        mockMvc.perform(get("/assessments/template"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("sensory-assessment-v1"))
+                .andExpect(jsonPath("$.title").value("Сенсорна анкета"))
+                .andExpect(jsonPath("$.questions").isArray());
+    }
 
     @Test
     void createAssessment_shouldReturn200() throws Exception {
@@ -104,3 +126,4 @@ class AssessmentControllerTest {
                 .andExpect(jsonPath("$.id").value(assessmentId.toString()));
     }
 }
+
