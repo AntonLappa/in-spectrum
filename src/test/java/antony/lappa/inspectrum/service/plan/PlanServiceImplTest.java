@@ -5,13 +5,23 @@ import antony.lappa.inspectrum.controller.dto.plans.PlanGenerateRequestDto;
 import antony.lappa.inspectrum.exception.PlanNotFoundException;
 import antony.lappa.inspectrum.mapper.PlanItemMapper;
 import antony.lappa.inspectrum.mapper.PlanMapper;
+import antony.lappa.inspectrum.repository.AssessmentRepository;
 import antony.lappa.inspectrum.repository.PlanItemRepository;
 import antony.lappa.inspectrum.repository.PlanRepository;
+import antony.lappa.inspectrum.repository.ResourceRepository;
+import antony.lappa.inspectrum.repository.SkillRepository;
+import antony.lappa.inspectrum.repository.entity.AssessmentEntity;
 import antony.lappa.inspectrum.repository.entity.PlanEntity;
 import antony.lappa.inspectrum.repository.entity.PlanItemEntity;
+import antony.lappa.inspectrum.repository.entity.ResourceEntity;
+import antony.lappa.inspectrum.repository.entity.SkillEntity;
 import antony.lappa.inspectrum.repository.entity.Status;
+import antony.lappa.inspectrum.service.assessment.AssessmentTemplateService;
 import antony.lappa.inspectrum.service.model.Plan;
 import antony.lappa.inspectrum.service.model.PlanItem;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,25 +49,42 @@ class PlanServiceImplTest {
     private PlanItemRepository planItemRepository;
 
     @Mock
+    private AssessmentRepository assessmentRepository;
+
+    @Mock
+    private SkillRepository skillRepository;
+
+    @Mock
+    private ResourceRepository resourceRepository;
+
+    @Mock
     private PlanMapper planMapper;
 
     @Mock
     private PlanItemMapper planItemMapper;
 
+    @Mock
+    private AssessmentTemplateService assessmentTemplateService;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
     @InjectMocks
     private PlanServiceImpl planService;
 
     @Test
-    void generate_shouldCreatePlanWithItems() {
+    void generate_shouldCreatePlan() throws JsonProcessingException {
         //given
         UUID userId = UUID.randomUUID();
         UUID assessmentId = UUID.randomUUID();
-        UUID resourceId1 = UUID.randomUUID();
-        UUID resourceId2 = UUID.randomUUID();
+
+        AssessmentEntity assessmentEntity = new AssessmentEntity();
+        assessmentEntity.setId(assessmentId);
+        assessmentEntity.setUserId(userId);
+        assessmentEntity.setAnswerJson("{\"q1\":3,\"q2\":5}");
 
         PlanGenerateRequestDto request = new PlanGenerateRequestDto();
         request.setAssessmentId(assessmentId);
-        request.setResourceIds(List.of(resourceId1, resourceId2));
 
         PlanEntity savedPlan = new PlanEntity();
         savedPlan.setId(UUID.randomUUID());
@@ -66,7 +94,36 @@ class PlanServiceImplTest {
         Plan expectedPlan = new Plan();
         expectedPlan.setId(savedPlan.getId());
 
+        Map<String, Integer> answers = Map.of("q1", 3, "q2", 5);
+
+        Map<String, Object> template = Map.of(
+                "questions", List.of(
+                        Map.of("id", "q1", "category", "TACTILE"),
+                        Map.of("id", "q2", "category", "TACTILE")
+                )
+        );
+
+        SkillEntity tactileSkill = new SkillEntity();
+        tactileSkill.setId(UUID.randomUUID());
+        tactileSkill.setCode("TACTILE");
+
+        ResourceEntity resource1 = new ResourceEntity();
+        resource1.setId(UUID.randomUUID());
+        resource1.setSkillId(tactileSkill.getId());
+
+        PlanItemEntity savedItem = new PlanItemEntity();
+        savedItem.setId(UUID.randomUUID());
+        savedItem.setPlanId(savedPlan.getId());
+        savedItem.setResourceId(resource1.getId());
+        savedItem.setSortOrder(0);
+
+        when(assessmentRepository.findById(assessmentId)).thenReturn(Optional.of(assessmentEntity));
+        when(objectMapper.readValue(eq(assessmentEntity.getAnswerJson()), any(TypeReference.class))).thenReturn(answers);
+        when(assessmentTemplateService.getTemplate()).thenReturn(template);
+        when(skillRepository.findByCode("TACTILE")).thenReturn(Optional.of(tactileSkill));
+        when(resourceRepository.findBySkillIdAndIsPublishedTrue(tactileSkill.getId())).thenReturn(List.of(resource1));
         when(planRepository.save(any(PlanEntity.class))).thenReturn(savedPlan);
+        when(planItemRepository.saveAll(anyList())).thenReturn(List.of(savedItem));
         when(planMapper.toDomain(eq(savedPlan), anyList())).thenReturn(expectedPlan);
 
         //when
@@ -75,33 +132,9 @@ class PlanServiceImplTest {
         //then
         assertNotNull(result);
         assertEquals(savedPlan.getId(), result.getId());
+        verify(assessmentRepository).findById(assessmentId);
         verify(planRepository).save(any(PlanEntity.class));
         verify(planItemRepository).saveAll(anyList());
-    }
-
-    @Test
-    void generate_shouldCreatePlanWithoutItems_whenResourceIdsEmpty() {
-        //given
-        UUID userId = UUID.randomUUID();
-        PlanGenerateRequestDto request = new PlanGenerateRequestDto();
-        request.setAssessmentId(UUID.randomUUID());
-        request.setResourceIds(Collections.emptyList());
-
-        PlanEntity savedPlan = new PlanEntity();
-        savedPlan.setId(UUID.randomUUID());
-
-        Plan expectedPlan = new Plan();
-        expectedPlan.setId(savedPlan.getId());
-
-        when(planRepository.save(any(PlanEntity.class))).thenReturn(savedPlan);
-        when(planMapper.toDomain(eq(savedPlan), eq(Collections.emptyList()))).thenReturn(expectedPlan);
-
-        //when
-        Plan result = planService.generate(userId, request);
-
-        //then
-        assertNotNull(result);
-        verify(planItemRepository, never()).saveAll(anyList());
     }
 
     @Test
