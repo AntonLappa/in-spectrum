@@ -44,15 +44,14 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
         String jwt = getJwtFromRequest(request);
 
-        log.info("JWT from request: {}", jwt);
-        log.info("JWT valid: {}", tokenService.isValidToken(jwt));
-        log.info("Authorization header: {}", request.getHeader(HttpHeaders.AUTHORIZATION));
+        log.info("Authentication request received for URI: {}", request.getRequestURI());
 
         if (!StringUtils.hasText(jwt) || !tokenService.isValidToken(jwt)) {
-            // Skip authentication due to invalid JWT.
             filterChain.doFilter(request, response);
             return;
         }
+
+        log.info("Token validated successfully");
 
         String id = tokenService.getId(jwt);
         Role userUpperBoundaryRole = tokenService.getRole(jwt);
@@ -69,6 +68,8 @@ public class TokenAuthFilter extends OncePerRequestFilter {
         }
 
         UserDetails userDetails = new User(id, jwt, authorities);
+
+        log.info("User authenticated: {}", id);
 
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(userDetails, jwt, userDetails.getAuthorities());

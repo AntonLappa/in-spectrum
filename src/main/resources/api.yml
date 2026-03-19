@@ -537,14 +537,15 @@ paths:
         - Plans
 
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/PlanGenerateRequest'
 
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -659,7 +660,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ResourceTypeParam'
         - $ref: '#/components/parameters/AudienceParam'
-        - $ref: '#/components/parameters/SkillCodeParam'
+        - $ref: '#/components/parameters/SkillIdParam'
         - $ref: '#/components/parameters/IsPublishedParam'
         - $ref: '#/components/parameters/LimitParam'
         - $ref: '#/components/parameters/OffsetParam'
@@ -677,7 +678,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResourceListResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResourceResponse'
         400:
           description: Bad Request
           content:
@@ -879,15 +882,16 @@ components:
         type: string
         enum: [ HOME, CLASS, BOTH ]
       description: Filter resources by audience
-    SkillCodeParam:
-      name: skill_code
+    SkillIdParam:
+      name: skillId
       in: query
       required: false
       schema:
         type: string
-      description: Filter resources by skill code
+        format: uuid
+      description: Filter resources by skill ID
     IsPublishedParam:
-      name: is_published
+      name: isPublished
       in: query
       required: false
       schema:
@@ -1049,16 +1053,28 @@ components:
       type: object
       required:
         - id
+        - user_id
         - submitted_at
       properties:
         id:
           type: string
           format: uuid
           example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        user_id:
+          type: string
+          format: uuid
+          example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
         submitted_at:
           type: string
           format: date-time
           example: 2026-01-24T20:00:00Z
+        answers:
+          type: object
+          additionalProperties: true
+          description: Raw answers submitted by the user
+          example:
+            q1: 3
+            q2: 5
         result:
           type: object
           additionalProperties: true
@@ -1148,6 +1164,8 @@ components:
     # =======
     PlanGenerateRequest:
       type: object
+      required:
+        - assessment_id
       properties:
         assessment_id:
           type: string
@@ -1169,13 +1187,13 @@ components:
       type: object
       required:
         - id
-        - skill_code
+        - skill_id
         - title
         - description
         - type
         - audience
         - url
-        - is_published
+        - published
         - created_at
       properties:
         id:
@@ -1183,9 +1201,10 @@ components:
           format: uuid
           example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
           readOnly: true
-        skill_code:
+        skill_id:
           type: string
-          example: COMMUNICATION
+          format: uuid
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         title:
           type: string
           example: Name of resource
@@ -1203,37 +1222,28 @@ components:
         url:
           type: string
           example: https://example.com/resource/123
-        is_published:
+        content:
+          type: string
+          nullable: true
+          description: Text content (only for TEXT resources)
+          example: "Step 1: ..."
+        published:
           type: boolean
           example: true
+        created_by:
+          type: string
+          format: uuid
+          example: 38ca31a9-a336-4087-ac97-d1ed40a2778e
         created_at:
           type: string
           format: date-time
           example: 2021-09-20T12:00:00Z
           readOnly: true
-    # ========
-    ResourceListResponse:
-      type: object
-      required:
-        - total
-        - limit
-        - offset
-        - items
-      properties:
-        total:
-          type: integer
-          example: 154
-          description: Total number of resources matching the filter.
-        limit:
-          type: integer
-          example: 20
-        offset:
-          type: integer
-          example: 0
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceResponse'
+        updated_at:
+          type: string
+          format: date-time
+          example: 2021-09-20T12:00:00Z
+          readOnly: true
     # ========
     ProgressCreateRequest:
       type: object
