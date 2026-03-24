@@ -20,7 +20,8 @@ public class GlobalExceptionHandler {
             PlanNotFoundException.class,
             PlanItemNotFoundException.class,
             ResourceNotFoundException.class,
-            ProgressNotFoundException.class,})
+            ProgressNotFoundException.class,
+            SkillNotFoundException.class})
     public ResponseEntity<ErrorDto> handleNotFoundException(RuntimeException e) {
 
         ErrorDto errorDto = new ErrorDto(e.getMessage());
@@ -61,14 +62,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDto);
     }
 
-    @ExceptionHandler(MissingRequiredFieldException.class)
-    public ResponseEntity<ErrorDto> handleMissingRequiredFieldException(MissingRequiredFieldException e) {
+    @ExceptionHandler({MissingRequiredFieldException.class,
+            InvalidResourceContentException.class,
+            AssessmentParseException.class})
+    public ResponseEntity<ErrorDto> handleBadRequestException(RuntimeException e) {
 
         ErrorDto errorDto = new ErrorDto(e.getMessage());
 
         log.error(e.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDto);
+    }
+
+    @ExceptionHandler(AssessmentTemplateLoadException.class)
+    public ResponseEntity<ErrorDto> handleTemplateLoadException(AssessmentTemplateLoadException e) {
+
+        ErrorDto errorDto = new ErrorDto(e.getMessage());
+
+        log.error(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDto);
     }
 
     @ExceptionHandler(Exception.class)
