@@ -36,6 +36,13 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentMapper.toDto(assessment));
     }
 
+    @GetMapping("/latest")
+    public ResponseEntity<AssessmentResponseDto> getLatestAssessment() {
+        UUID userId = userService.findCurrentUser().getId();
+        Assessment assessment = assessmentService.getLatest(userId);
+        return ResponseEntity.ok(assessmentMapper.toDto(assessment));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AssessmentResponseDto> getAssessmentById(@PathVariable UUID id) {
         UUID userId = userService.findCurrentUser().getId();

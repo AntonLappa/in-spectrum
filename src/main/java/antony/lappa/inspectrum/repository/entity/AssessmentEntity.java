@@ -1,6 +1,8 @@
 package antony.lappa.inspectrum.repository.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,9 +29,11 @@ public class AssessmentEntity {
     @Column(name = "submitted_at", nullable = false)
     private Instant submittedAt;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "answers_json", nullable = false, columnDefinition = "jsonb")
     private String answerJson;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "result_json", nullable = false, columnDefinition = "jsonb")
     private String resultJson;
 

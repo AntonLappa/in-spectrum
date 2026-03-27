@@ -4,10 +4,14 @@ import antony.lappa.inspectrum.controller.dto.plan_item.PlanItemResponseDto;
 import antony.lappa.inspectrum.repository.entity.PlanItemEntity;
 import antony.lappa.inspectrum.service.model.PlanItem;
 import antony.lappa.inspectrum.service.model.Status;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class PlanItemMapper {
+
+    private final ResourceMapper resourceMapper;
 
     public PlanItem toDomainItem(PlanItemEntity entity) {
         if (entity == null) {
@@ -34,7 +38,7 @@ public class PlanItemMapper {
         dto.setId(item.getId());
         dto.setStatus(antony.lappa.inspectrum.controller.dto.Status.valueOf(item.getStatus().name()));
         dto.setSortOrder(item.getSortOrder());
-        dto.setResource(null);
+        dto.setResource(resourceMapper.toShortDto(item.getResource()));
 
         return dto;
     }

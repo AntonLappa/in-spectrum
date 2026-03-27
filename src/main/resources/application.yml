@@ -13,8 +13,8 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
 
-  jackson:
-   property-naming-strategy: SNAKE_CASE
+  jpa:
+    open-in-view: false
 
 server:
   port: ${PORT:8080}

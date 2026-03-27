@@ -2,9 +2,11 @@ package antony.lappa.inspectrum.service.plan;
 
 import antony.lappa.inspectrum.controller.dto.plan_item.PlanItemStatusUpdateRequestDto;
 import antony.lappa.inspectrum.controller.dto.plans.PlanGenerateRequestDto;
+import antony.lappa.inspectrum.exception.AccessDeniedException;
 import antony.lappa.inspectrum.exception.PlanNotFoundException;
 import antony.lappa.inspectrum.mapper.PlanItemMapper;
 import antony.lappa.inspectrum.mapper.PlanMapper;
+import antony.lappa.inspectrum.mapper.ResourceMapper;
 import antony.lappa.inspectrum.repository.AssessmentRepository;
 import antony.lappa.inspectrum.repository.PlanItemRepository;
 import antony.lappa.inspectrum.repository.PlanRepository;
@@ -19,9 +21,9 @@ import antony.lappa.inspectrum.repository.entity.Status;
 import antony.lappa.inspectrum.service.assessment.AssessmentTemplateService;
 import antony.lappa.inspectrum.service.model.Plan;
 import antony.lappa.inspectrum.service.model.PlanItem;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -64,6 +66,9 @@ class PlanServiceImplTest {
     private PlanItemMapper planItemMapper;
 
     @Mock
+    private ResourceMapper resourceMapper;
+
+    @Mock
     private AssessmentTemplateService assessmentTemplateService;
 
     @Mock
@@ -73,7 +78,7 @@ class PlanServiceImplTest {
     private PlanServiceImpl planService;
 
     @Test
-    void generate_shouldCreatePlan() throws JsonProcessingException {
+    void generate_shouldCreatePlan() throws JacksonException {
         //given
         UUID userId = UUID.randomUUID();
         UUID assessmentId = UUID.randomUUID();
@@ -254,7 +259,7 @@ class PlanServiceImplTest {
         when(planRepository.findById(planId)).thenReturn(Optional.of(planEntity));
 
         //when & then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(AccessDeniedException.class,
                 () -> planService.updateItemStatus(userId, itemId, request));
     }
 

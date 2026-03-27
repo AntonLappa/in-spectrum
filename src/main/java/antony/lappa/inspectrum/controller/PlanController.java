@@ -58,13 +58,13 @@ public class PlanController {
     }
 
 
-    @PatchMapping("/items/{itemId}/status")
+    @PatchMapping("/items/{planItemId}/status")
     public ResponseEntity<PlanItemResponseDto> updateItemStatus(
-            @PathVariable UUID itemId,
+            @PathVariable UUID planItemId,
             @RequestBody PlanItemStatusUpdateRequestDto request) {
 
         UUID userId = userService.findCurrentUser().getId();
-        PlanItem updatedItem = planService.updateItemStatus(userId, itemId,
+        PlanItem updatedItem = planService.updateItemStatus(userId, planItemId,
                 request);
 
         return ResponseEntity.ok(planItemMapper.toDtoItem(updatedItem));

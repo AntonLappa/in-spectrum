@@ -21,7 +21,7 @@ class PlanMapperTest {
 
     @BeforeEach
     void setUp() {
-        PlanItemMapper planItemMapper = new PlanItemMapper();
+        PlanItemMapper planItemMapper = new PlanItemMapper(new ResourceMapper());
         planMapper = new PlanMapper(planItemMapper);
     }
 

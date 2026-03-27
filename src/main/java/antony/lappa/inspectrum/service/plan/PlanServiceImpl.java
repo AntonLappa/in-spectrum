@@ -9,6 +9,7 @@ import antony.lappa.inspectrum.exception.PlanNotFoundException;
 import antony.lappa.inspectrum.exception.SkillNotFoundException;
 import antony.lappa.inspectrum.mapper.PlanItemMapper;
 import antony.lappa.inspectrum.mapper.PlanMapper;
+import antony.lappa.inspectrum.mapper.ResourceMapper;
 import antony.lappa.inspectrum.repository.AssessmentRepository;
 import antony.lappa.inspectrum.repository.PlanItemRepository;
 import antony.lappa.inspectrum.repository.PlanRepository;
@@ -22,9 +23,9 @@ import antony.lappa.inspectrum.repository.entity.SkillEntity;
 import antony.lappa.inspectrum.service.assessment.AssessmentTemplateService;
 import antony.lappa.inspectrum.service.model.Plan;
 import antony.lappa.inspectrum.service.model.PlanItem;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -51,6 +53,7 @@ public class PlanServiceImpl implements PlanService {
     private final ResourceRepository resourceRepository;
     private final PlanMapper planMapper;
     private final PlanItemMapper planItemMapper;
+    private final ResourceMapper resourceMapper;
     private final AssessmentTemplateService assessmentTemplateService;
     private final ObjectMapper objectMapper;
 
@@ -69,7 +72,7 @@ public class PlanServiceImpl implements PlanService {
         Map<String, Integer> answers;
         try {
             answers = objectMapper.readValue(assessment.getAnswerJson(), new TypeReference<>() {});
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new AssessmentParseException(assessment.getId(), e);
         }
         log.info("Parsed {} answers from assessment {}", answers.size(), assessment.getId());
@@ -141,7 +144,9 @@ public class PlanServiceImpl implements PlanService {
             log.info("Created {} plan items", savedItems.size());
         }
 
-        return planMapper.toDomain(savedPlan, savedItems);
+        Plan domainPlan = planMapper.toDomain(savedPlan, savedItems);
+        loadResourcesForPlan(domainPlan);
+        return domainPlan;
     }
 
     @Override
@@ -153,7 +158,9 @@ public class PlanServiceImpl implements PlanService {
 
         List<PlanItemEntity> items = planItemRepository.findAllByPlanIdOrderBySortOrderAsc(planEntity.getId());
 
-        return planMapper.toDomain(planEntity, items);
+        Plan plan = planMapper.toDomain(planEntity, items);
+        loadResourcesForPlan(plan);
+        return plan;
     }
 
     @Override
@@ -168,13 +175,16 @@ public class PlanServiceImpl implements PlanService {
                 .orElseThrow(() -> new PlanNotFoundException(itemEntity.getPlanId()));
 
         if (!planEntity.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("User does not have access to this plan item");
+            throw new AccessDeniedException("User does not have access to this plan item");
         }
 
         itemEntity.setStatus(antony.lappa.inspectrum.repository.entity.Status.valueOf(request.getStatus().name()));
         PlanItemEntity savedItem = planItemRepository.save(itemEntity);
 
-        return planItemMapper.toDomainItem(savedItem);
+        PlanItem domainItem = planItemMapper.toDomainItem(savedItem);
+        resourceRepository.findById(domainItem.getResourceId()).ifPresent(entity ->
+                domainItem.setResource(resourceMapper.toDomain(entity)));
+        return domainItem;
     }
 
     @Override
@@ -188,4 +198,28 @@ public class PlanServiceImpl implements PlanService {
                 .toList();
     }
 
+    private void loadResourcesForPlan(Plan plan) {
+        if (plan.getItems() == null || plan.getItems().isEmpty()) {
+            return;
+        }
+
+        List<UUID> resourceIds = plan.getItems().stream()
+                .map(PlanItem::getResourceId)
+                .filter(Objects::nonNull)
+                .toList();
+
+        if (resourceIds.isEmpty()) {
+            return;
+        }
+
+        Map<UUID, ResourceEntity> resourceMap = resourceRepository.findAllById(resourceIds).stream()
+                .collect(java.util.stream.Collectors.toMap(ResourceEntity::getId, r -> r));
+
+        for (PlanItem item : plan.getItems()) {
+            ResourceEntity entity = resourceMap.get(item.getResourceId());
+            if (entity != null) {
+                item.setResource(resourceMapper.toDomain(entity));
+            }
+        }
+    }
 }

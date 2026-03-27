@@ -15,6 +15,7 @@ public class PlanItem {
     private UUID id;
     private UUID planId;
     private UUID resourceId;
+    private Resource resource;
     private Status status;
     private Integer sortOrder;
     private Instant createdAt;
