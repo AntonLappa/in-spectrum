@@ -1,5 +1,7 @@
 package antony.lappa.inspectrum.controller.dto.resource;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import antony.lappa.inspectrum.controller.dto.ResourceAudience;
 import antony.lappa.inspectrum.controller.dto.ResourceType;
 import lombok.AllArgsConstructor;
@@ -14,7 +16,11 @@ import java.time.Instant;
 @AllArgsConstructor
 public class ResourceCreateRequestDto {
 
+    @JsonProperty("skill_id")
+    @JsonAlias("skillId")
     private UUID skillId;
+    @JsonProperty("resource_id")
+    @JsonAlias("resourceId")
     private UUID resourceId;
     private String title;
     private String description;

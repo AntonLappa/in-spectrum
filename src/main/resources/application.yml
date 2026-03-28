@@ -26,3 +26,8 @@ server:
 jwt:
   secret: ${JWT_SECRET:9f4c7a8e2d1b6f3a5c8d0e7f1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d}
   ttl-millis: ${JWT_TTL:604800000} # 1 week in millisecond
+
+springdoc:
+  use-management-port: false
+  model-converters:
+    use-jackson-converter: true

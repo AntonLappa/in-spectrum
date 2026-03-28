@@ -1,5 +1,7 @@
 package antony.lappa.inspectrum.controller.dto.plans;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import antony.lappa.inspectrum.controller.dto.plan_item.PlanItemResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +20,8 @@ public class PlanResponseDto {
 
     private String title;
 
+    @JsonProperty("created_at")
+    @JsonAlias("createdAt")
     private Instant createdAt;
 
     private List<PlanItemResponseDto> items;
