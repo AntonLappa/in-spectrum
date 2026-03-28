@@ -1,8 +1,8 @@
 package antony.lappa.inspectrum.service.assessment;
 
 import antony.lappa.inspectrum.exception.AssessmentTemplateLoadException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;

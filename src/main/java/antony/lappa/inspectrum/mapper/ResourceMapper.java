@@ -80,4 +80,20 @@ public class ResourceMapper {
 
         return resource;
     }
+
+    public antony.lappa.inspectrum.controller.dto.resource.ResourceShortDto toShortDto(Resource resource) {
+        if (resource == null) {
+            return null;
+        }
+
+        antony.lappa.inspectrum.controller.dto.resource.ResourceShortDto shortDto =
+                new antony.lappa.inspectrum.controller.dto.resource.ResourceShortDto();
+        shortDto.setId(resource.getId());
+        shortDto.setTitle(resource.getTitle());
+        shortDto.setType(resource.getType() != null ? resource.getType().name() : null);
+        shortDto.setAudience(resource.getAudience() != null ? resource.getAudience().name() : null);
+        shortDto.setUrl(resource.getUrl());
+
+        return shortDto;
+    }
 }

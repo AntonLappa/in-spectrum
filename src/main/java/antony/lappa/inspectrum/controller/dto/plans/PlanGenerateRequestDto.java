@@ -1,5 +1,7 @@
 package antony.lappa.inspectrum.controller.dto.plans;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +15,8 @@ import java.util.UUID;
 public class PlanGenerateRequestDto {
 
     @NotNull
+    @JsonProperty("assessment_id")
+    @JsonAlias("assessmentId")
     private UUID assessmentId;
 }
 

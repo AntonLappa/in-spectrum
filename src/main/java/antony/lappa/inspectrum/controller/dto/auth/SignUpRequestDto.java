@@ -2,6 +2,7 @@ package antony.lappa.inspectrum.controller.dto.auth;
 
 import antony.lappa.inspectrum.service.model.UserType;
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,8 @@ public class SignUpRequestDto {
     private String name;
 
     @NotBlank
-    @JsonAlias({ "phoneNumber", "phone_number" })
+    @JsonProperty("phone_number")
+    @JsonAlias("phoneNumber")
     private String phoneNumber;
 
     @NotBlank
@@ -31,7 +33,8 @@ public class SignUpRequestDto {
     private String password;
 
     @NotNull
-    @JsonAlias({ "userType", "user_type" })
+    @JsonProperty("user_type")
+    @JsonAlias("userType")
     private UserType userType;
 
 }

@@ -55,10 +55,10 @@ class AuthControllerTest {
         String requestBody = """
                 {
                     "name": "John Doe",
-                    "phoneNumber": "+380123456789",
+                    "phone_number": "+380123456789",
                     "email": "john@example.com",
                     "password": "password123",
-                    "userType": "PARENT"
+                    "user_type": "PARENT"
                 }
                 """;
 

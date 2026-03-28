@@ -2,6 +2,7 @@
 
 -- changeset antony:004-add-resources
 
+ALTER TABLE resources ALTER COLUMN url DROP NOT NULL;
 ALTER TABLE resources ADD COLUMN content TEXT;
 
 INSERT INTO resources (
