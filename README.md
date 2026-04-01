@@ -19,8 +19,13 @@ A questionnaire system that allows users to fill out structured assessments. The
 The core feature of the application. After an assessment is submitted, the system generates a personalized development plan by analyzing the user's answers. Plans inherently load and enrich full resource details using optimized batch-fetching to prevent database bottlenecks. The generation algorithm is described in detail in the [Plan Generation Logic](#plan-generation-logic) section below.
 
 ### Resources
-Educational materials stored in the system, supporting two content types: `TEXT` and `VIDEO`. Each resource is linked to a specific skill and can be filtered by type, audience (HOME, CLASS, BOTH), skill, and publication status. Resources serve as the building blocks of generated plans.
+Educational materials stored in the system, supporting two content types: `TEXT` and `VIDEO`.
 
+For MVP purposes:
+- Text resources are stored directly in the database.
+- Video resources are provided and rendered on the frontend (local video files mapped to resource titles).
+
+This approach allows fast iteration without introducing external storage or media services, while keeping backend contracts stable.
 ### Progress Tracking
 Users can log progress entries against individual plan items. Each entry is tied to a specific date, and the system prevents duplicate entries for the same plan item on the same day. Progress history can be retrieved per plan item.
 
@@ -154,7 +159,26 @@ Authorization: Bearer <token>
 - Sensitive data such as JWT tokens are not logged
 - Secure error trapping shields application logic from external consumers 
 
-## How to Run
+## Deployment
+
+The application is fully deployed and accessible online.
+
+- **Backend (Spring Boot + PostgreSQL)** is deployed on Railway.
+- **Frontend (React + Vite)** is deployed and serves the full application UI, communicating with the backend API.
+
+## Live Demo
+
+The application is available online:
+
+- Frontend: inspectrum.up.railway.app
+- Backend API: in-spectrum-production.up.railway.app
+
+The frontend is fully integrated with the backend and demonstrates the complete user flow:
+registration → assessment → plan generation → resource consumption → progress tracking.
+
+All core features, including authentication, assessment, plan generation, and progress tracking, are available in the deployed environment.
+
+The backend uses a managed PostgreSQL instance on Railway, and database schema along with seed data (skills and resources) is automatically initialized via Liquibase on application startup.
 
 ### Prerequisites
 
@@ -163,6 +187,8 @@ Authorization: Bearer <token>
 - Maven 3.9+
 
 ### Database Setup
+
+
 
 Start a PostgreSQL instance using Docker Compose:
 
@@ -179,6 +205,16 @@ This creates a PostgreSQL container with the following defaults:
 | Database   | `neuro_app`      |
 | Username   | `neuro`          |
 | Password   | `neuro_password` |
+
+### Seed Data
+
+The application uses Liquibase not only for schema management but also for initial data seeding.
+
+On startup, the following data is automatically populated:
+- Developmental skills (TACTILE, AUDITORY, VISUAL, PROPRIOCEPTION, ORAL)
+- Educational resources (TEXT and VIDEO)
+
+This ensures that the system is fully functional immediately after deployment without manual database setup.
 
 ### Running the Application
 
@@ -220,3 +256,14 @@ The application boasts a thoroughly comprehensive test suite featuring 96 fully 
 - Role-based access control for administrative operations
 - Notification system for plan progress milestones
 - Export functionality for plans and progress reports
+
+## MVP Notes
+
+This project represents a Minimum Viable Product (MVP).
+
+Some design decisions were made intentionally for speed and simplicity:
+- Video resources are served from the frontend instead of a dedicated media storage
+- Role-based differentiation (Parent vs Educator) shares the same flow in MVP
+- Plan regeneration overrides previous plan state
+
+These decisions allow focusing on core functionality and can be extended in future iterations.
