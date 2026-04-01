@@ -12,3 +12,5 @@ databaseChangeLog:
       file: 004-add-resources.sql
       relativeToChangelogFile: true
 
+#сheck for railway
+  
