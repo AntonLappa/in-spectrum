@@ -36,4 +36,7 @@ build/
 .vscode/
 
 # Maven
-target/
+/.target/
+
+/.claude/
+/docs/
