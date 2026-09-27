@@ -6,9 +6,9 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST:127.0.0.1}:${DATABASE_PORT:5432}/${DATABASE_NAME:neuro_app}
-    username: ${DATABASE_USER:neuro}
-    password: ${DATABASE_PASSWORD:neuro_password}
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   liquibase:
@@ -24,7 +24,7 @@ server:
   forward-headers-strategy: framework
 
 jwt:
-  secret: ${JWT_SECRET:9f4c7a8e2d1b6f3a5c8d0e7f1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d}
+  secret: ${JWT_SECRET}
   ttl-millis: ${JWT_TTL:604800000} # 1 week in millisecond
 
 springdoc:
